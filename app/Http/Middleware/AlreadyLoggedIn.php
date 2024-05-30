@@ -20,7 +20,7 @@ class AlreadyLoggedIn
         // Check if the user is already logged in
         if (Session::has('loginId')) {
             // If logged in, check if the current URL is login or registration
-            if ($request->url() == url('login') || $request->url() == url('registration')) {
+            if ($request->url() == url('login')) {
                 // If on login or registration page, redirect back
                 return back();
             } else {

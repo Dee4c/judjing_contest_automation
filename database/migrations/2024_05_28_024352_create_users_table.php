@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->string('password');
+            $table->string('role')->default('judge'); // Set default role to 'judge'
             $table->timestamps();
-        });
+        });        
     }
 
     /**

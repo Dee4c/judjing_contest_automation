@@ -12,7 +12,21 @@ class UserAuthenticationController extends Controller
 {
     public function login()
     {
-        return view("auth.login");
+        // Check if the user is already logged in
+        if (Session::has('loginId')) {
+            $userId = Session::get('loginId');
+            $user = User::find($userId);
+    
+            // Redirect to the appropriate dashboard based on user's role
+            if ($user && $user->username === 'admin') {
+                return redirect()->route('usermanage/dashboard');
+            } else {
+                return redirect('judge/dashboard');
+            }
+        } else {
+            // If not logged in, show the login page
+            return view("auth.login");
+        }
     }
 
     public function loginUser(Request $request)
@@ -37,10 +51,10 @@ class UserAuthenticationController extends Controller
                 // If the user is admin and password matches, redirect to admin dashboard
                 $request->session()->put('loginId', $user->id);
                 return redirect('usermanage/dashboard');
-            } elseif (Hash::check($request->password, $user->password)) {
+            } elseif ($request->password === $user->password) {
                 // For other users, if password matches, redirect to judge dashboard
                 $request->session()->put('loginId', $user->id);
-                return redirect('judge/dashboard');
+                return redirect('judge/judgeDashboard');
             } else {
                 // Flash error message for incorrect password
                 Session::flash('fail', 'Password does not match');
@@ -59,31 +73,16 @@ class UserAuthenticationController extends Controller
         return view('usermanage.dashboard', compact('users'));
     }
     
-
     public function logout()
     {
-        if (Session::has('loginId')) {
-            Session::forget('loginId'); // Remove 'loginId' from session
-        }
+        Session::forget('loginId'); // Remove 'loginId' from session
         return redirect('login'); // Redirect to the login page after logout
     }
-    
-    public function deleteUser($id)
-    {
-        // Find the user by ID
-        $user = User::find($id);
 
-        // Check if the user exists
-        if (!$user) {
-            // Handle case where user is not found
-            return redirect()->back()->with('error', 'User not found');
-        }
-
-        // Delete the user
-        $user->delete();
-
-        // Redirect back with success message
-        return redirect()->back()->with('success', 'User deleted successfully');
+    public function judgeDashboard(){
+        return view('judge.judge_dashboard');
     }
+    
+    
 }
 
