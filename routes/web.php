@@ -3,18 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserAuthenticationController;
 use App\Http\Controllers\UserManagementController;
-
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\CandidateController;
 
 Route::redirect('/', '/login'); 
 Route::get('/login', [UserAuthenticationController::class,'login'])->middleware('alreadyLoggedIn');
@@ -25,12 +14,10 @@ Route::get('/usermanage/addjudge', [UserManagementController::class, 'addJudgeFo
 Route::post('/usermanage/addjudge', [UserManagementController::class, 'addJudge'])->name('addJudge');
 Route::delete('/user/{id}', [UserManagementController::class, 'deleteUser'])->name('user.delete');
 Route::put('/user/{id}', [UserManagementController::class, 'updateUser'])->middleware('isLoggedIn')->name('user.update');
-Route::get('/candidate/dashboard', [UserManagementController::class, 'candidateDashboard'])->middleware('isLoggedIn')->name('candidate.dashboard');
 Route::post('/candidate/add', [UserManagementController::class, 'addCandidate'])->middleware('isLoggedIn')->name('candidate.add');
-Route::get('/judge/judgeDashboard', [UserAuthenticationController::class, 'judgeDashboard'])->middleware('isLoggedIn')->name('judge.judge_dashboard');
-
-
-
+Route::get('/candidates/create', [CandidateController::class, 'create'])->name('candidate.create');
+Route::post('/candidates', [CandidateController::class, 'store'])->name('candidate.store');
+Route::get('/usermanage/candidate_dash', [UserManagementController::class, 'candidateDash'])->middleware('isLoggedIn')->name('usermanage.candidate_dash');
 
 
 

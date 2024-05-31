@@ -77,7 +77,7 @@
             <!-- Example link -->
             <li class="nav-item">
                 <a class="nav-link" href="{{route('usermanage.dashboard')}}">User Management</a>
-                <a class="nav-link" href="{{route('candidate.dashboard')}}">Candidate Management</a>
+                <a class="nav-link" href="{{ route('usermanage.candidate_dash') }}">Candidate Management</a>
                 <a class="nav-link" href="#">Reports</a>
             </li>
         </ul>

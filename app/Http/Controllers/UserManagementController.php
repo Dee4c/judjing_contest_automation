@@ -72,7 +72,7 @@ class UserManagementController extends Controller
         return redirect()->back()->with('success', 'User updated successfully');
     }
 
-    public function candidateDashboard()
+    public function candidateDash()
     {
         return view('usermanage.candidate_dash');
     }

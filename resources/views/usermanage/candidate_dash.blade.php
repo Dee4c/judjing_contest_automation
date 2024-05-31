@@ -74,7 +74,7 @@
         Add Candidate
     </button>
 
-    <table class="table table-bordered">
+    {{-- <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Username</th>
@@ -85,7 +85,7 @@
         </thead>
         <tbody>
         </tbody>
-    </table>
+    </table> --}}
     
     <div class="sidebar">
         <ul class="nav flex-column">
@@ -93,7 +93,7 @@
             <!-- Example link -->
             <li class="nav-item">
                 <a class="nav-link" href="{{route('usermanage.dashboard')}}">User Management</a>
-                <a class="nav-link" href="{{ route('candidate.dashboard') }}">Candidate Management</a>
+                <a class="nav-link" href="{{ route('usermanage.candidate_dash') }}">Candidate Management</a>
                 <a class="nav-link" href="#">Reports</a>
             </li>
         </ul>
@@ -108,7 +108,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addCandidateForm" method="POST" action="{{ route('candidate.add') }}">
+                    <form id="addCandidateForm" method="POST" action="{{ route('candidate.store') }}">
                         @csrf
                         <div class="mb-3">
                             <label for="candidateNumber" class="form-label">Candidate Number</label>
@@ -119,8 +119,8 @@
                             <input type="text" class="form-control" id="candidateName" name="candidateName">
                         </div>
                         <div class="mb-3">
-                            <label for="candidateAge" class="form-label">Candidate Age</label>
-                            <input type="number" class="form-control" id="candidateAge" name="candidateAge">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" name="age">
                         </div>
                         <div class="mb-3">
                             <label for="candidateAddress" class="form-label">Candidate Address</label>
@@ -131,7 +131,7 @@
                             <textarea class="form-control" id="candidateStatistics" name="candidateStatistics" rows="3"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                    </form>                    
                 </div>
             </div>
         </div>
