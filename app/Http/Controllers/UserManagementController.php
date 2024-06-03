@@ -140,4 +140,53 @@ class UserManagementController extends Controller
 
         return redirect()->back()->with('success', 'Candidate deleted successfully');
     }
+
+        public function updateCandidate(Request $request, $id)
+    {
+        $candidate = Candidate::find($id);
+        if (!$candidate) {
+            return redirect()->back()->with('error', 'Candidate not found');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'candidateNumber' => 'required|unique:candidates,candidateNumber,' . $id,
+            'candidateName' => 'required',
+            'age' => 'required|numeric',
+            'candidateAddress' => 'required',
+            'waist' => 'required|numeric',
+            'hips' => 'required|numeric',
+            'chest' => 'required|numeric',
+            'candidateImage' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image file types and size
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Update candidate details
+        $candidate->candidateNumber = $request->candidateNumber;
+        $candidate->candidateName = $request->candidateName;
+        $candidate->age = $request->age;
+        $candidate->candidateAddress = $request->candidateAddress;
+        $candidate->waist = $request->waist;
+        $candidate->hips = $request->hips;
+        $candidate->chest = $request->chest;
+
+        // Handle image upload
+        if ($request->hasFile('candidateImage')) {
+            $image = $request->file('candidateImage');
+            if ($image->isValid()) {
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('images'), $imageName); // Move the image to the public/images directory
+                $candidate->candidateImage = 'images/' . $imageName; // Save the image path in the database
+            } else {
+                return back()->withErrors(['candidateImage' => 'Invalid image file'])->withInput();
+            }
+        }
+
+        $candidate->save();
+
+        return redirect()->route('usermanage.candidate_dash')->with('success', 'Candidate updated successfully');
+    }
+
 }

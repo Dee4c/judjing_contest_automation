@@ -268,6 +268,10 @@
             padding: 20px;
         }
     
+        .add-judge-btn {
+            margin-bottom: 20px; /* Adjusted margin */
+        }
+    
         /* Updated table styles */
         table {
             width: 100%;
@@ -325,7 +329,6 @@
 
         .add-judge-btn {
             margin-left: 1165px;
-            margin-bottom: 20px;
         }
 
         .title-id {
@@ -404,7 +407,6 @@
 </div>
 <div class="content">
     <div class="container">
-        <h1 class="title-id">CANDIDATE MANAGEMENT</h1>
        <!-- Add Candidate Button -->
 <div class="add-judge-btn">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCandidateModal">Add Candidate</button>
@@ -439,9 +441,7 @@
             <td>{{ $candidate->hips }}</td>
             <td>{{ $candidate->chest }}</td>
             <td>
-                {{-- Edit Button --}}
-                {{-- <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editCandidateModal{{ $candidate->id }}">Edit</a> --}}
-                
+               
                 <!-- Delete Button -->
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $candidate->id }}">Delete</button>
             </td>
