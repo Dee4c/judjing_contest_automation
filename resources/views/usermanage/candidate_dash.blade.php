@@ -312,7 +312,7 @@
     
         /* Added button styles */
         .btn {
-            background-color: #4CAF50;
+            background-color: #0275d8;
             border: none;
             color: white;
             padding: 5px 12px;
@@ -324,11 +324,11 @@
         }
     
         .btn:hover {
-            background-color: #45a049;
+            background-color: #5bc0de;
         }
 
         .add-judge-btn {
-            margin-left: 1165px;
+            margin-left: 500px;
         }
 
         .title-id {
@@ -407,6 +407,7 @@
 </div>
 <div class="content">
     <div class="container">
+        <h1 class="title-id">CANDIDATE MANAGEMENT</h1>
        <!-- Add Candidate Button -->
 <div class="add-judge-btn">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCandidateModal">Add Candidate</button>
@@ -441,11 +442,74 @@
             <td>{{ $candidate->hips }}</td>
             <td>{{ $candidate->chest }}</td>
             <td>
-               
+                <!-- Edit Button -->
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editModal{{ $candidate->id }}">Edit</button>
                 <!-- Delete Button -->
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $candidate->id }}">Delete</button>
             </td>
         </tr>
+        <!-- Edit Candidate Modal -->
+        <div class="modal fade" id="editModal{{ $candidate->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $candidate->id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel{{ $candidate->id }}">Edit Candidate</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Candidate Edit Form -->
+                        <form id="editCandidateForm{{ $candidate->id }}" method="POST" action="{{ route('candidate.update', $candidate->id) }}" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <!-- Candidate Number -->
+                            <div class="form-group">
+                                <label for="candidateNumber">Candidate Number</label>
+                                <input type="text" class="form-control" name="candidateNumber" value="{{ $candidate->candidateNumber }}" required>
+                            </div>
+                            <!-- Name -->
+                            <div class="form-group">
+                                <label for="candidateName">Name</label>
+                                <input type="text" class="form-control" name="candidateName" value="{{ $candidate->candidateName }}" required>
+                            </div>
+                            <!-- Age -->
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" class="form-control" name="age" value="{{ $candidate->age }}" required>
+                            </div>
+                            <!-- Address -->
+                            <div class="form-group">
+                                <label for="candidateAddress">Address</label>
+                                <input type="text" class="form-control" name="candidateAddress" value="{{ $candidate->candidateAddress }}" required>
+                            </div>
+                            <!-- Waist -->
+                            <div class="form-group">
+                                <label for="waist">Waist</label>
+                                <input type="number" class="form-control" name="waist" value="{{ $candidate->waist }}" required>
+                            </div>
+                            <!-- Hips -->
+                            <div class="form-group">
+                                <label for="hips">Hips</label>
+                                <input type="number" class="form-control" name="hips" value="{{ $candidate->hips }}" required>
+                            </div>
+                            <!-- Chest -->
+                            <div class="form-group">
+                                <label for="chest">Chest</label>
+                                <input type="number" class="form-control" name="chest" value="{{ $candidate->chest }}" required>
+                            </div>
+                            <!-- Image Upload -->
+                            <div class="form-group">
+                                <label for="candidateImage">Upload Image</label>
+                                <input type="file" class="form-control" name="candidateImage" accept="image/*">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" form="editCandidateForm{{ $candidate->id }}" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Delete Account Modal for this Candidate -->
         <div class="modal fade" id="deleteModal{{ $candidate->id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -472,7 +536,6 @@
     </tbody>
 </table>
 
-
 <!-- Add Candidate Modal -->
 <div class="modal fade" id="addCandidateModal" tabindex="-1" aria-labelledby="addCandidateModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -483,48 +546,48 @@
             </div>
             <div class="modal-body" id="candidateFormsContainer">
                 <!-- Candidate Form -->
-            <form id="addCandidateForm" method="POST" action="{{ route('candidate.store') }}" enctype="multipart/form-data">
-                @csrf
-                <!-- Candidate Number -->
-                <div class="form-group">
-                    <label for="candidateNumber">Candidate Number</label>
-                    <input type="text" class="form-control" name="candidateNumber" required>
-                </div>
-                <!-- Name -->
-                <div class="form-group">
-                    <label for="candidateName">Name</label>
-                    <input type="text" class="form-control" name="candidateName" required>
-                </div>
-                <!-- Age -->
-                <div class="form-group">
-                    <label for="age">Age</label>
-                    <input type="number" class="form-control" name="age" required>
-                </div>
-                <!-- Address -->
-                <div class="form-group">
-                    <label for="candidateAddress">Address</label>
-                    <input type="text" class="form-control" name="candidateAddress" required>
-                </div>
-                <!-- Waist -->
-                <div class="form-group">
-                    <label for="waist">Waist</label>
-                    <input type="number" class="form-control" name="waist" required>
-                </div>
-                <!-- Hips -->
-                <div class="form-group">
-                    <label for="hips">Hips</label>
-                    <input type="number" class="form-control" name="hips" required>
-                </div>
-                <!-- Chest -->
-                <div class="form-group">
-                    <label for="chest">Chest</label>
-                    <input type="number" class="form-control" name="chest" required>
-                </div>
-                <!-- Image Upload -->
-                <div class="form-group">
-                    <label for="candidateImage">Upload Image</label>
-                    <input type="file" class="form-control" name="candidateImage" accept="image/*" required>
-                </div>
+                <form id="addCandidateForm" method="POST" action="{{ route('candidate.store') }}" enctype="multipart/form-data">
+                    @csrf
+                    <!-- Candidate Number -->
+                    <div class="form-group">
+                        <label for="candidateNumber">Candidate Number</label>
+                        <input type="text" class="form-control" name="candidateNumber" required>
+                    </div>
+                    <!-- Name -->
+                    <div class="form-group">
+                        <label for="candidateName">Name</label>
+                        <input type="text" class="form-control" name="candidateName" required>
+                    </div>
+                    <!-- Age -->
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" class="form-control" name="age" required>
+                    </div>
+                    <!-- Address -->
+                    <div class="form-group">
+                        <label for="candidateAddress">Address</label>
+                        <input type="text" class="form-control" name="candidateAddress" required>
+                    </div>
+                    <!-- Waist -->
+                    <div class="form-group">
+                        <label for="waist">Waist</label>
+                        <input type="number" class="form-control" name="waist" required>
+                    </div>
+                    <!-- Hips -->
+                    <div class="form-group">
+                        <label for="hips">Hips</label>
+                        <input type="number" class="form-control" name="hips" required>
+                    </div>
+                    <!-- Chest -->
+                    <div class="form-group">
+                        <label for="chest">Chest</label>
+                        <input type="number" class="form-control" name="chest" required>
+                    </div>
+                    <!-- Image Upload -->
+                    <div class="form-group">
+                        <label for="candidateImage">Upload Image</label>
+                        <input type="file" class="form-control" name="candidateImage" accept="image/*" required>
+                    </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

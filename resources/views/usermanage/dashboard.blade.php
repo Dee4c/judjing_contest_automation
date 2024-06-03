@@ -324,7 +324,7 @@
         }
 
         .add-judge-btn {
-            margin-left: 1195px;
+            margin-left: 500px;
             margin-bottom: 20px; /* Adjusted margin */
         }
 

@@ -143,11 +143,6 @@ class UserManagementController extends Controller
 
         public function updateCandidate(Request $request, $id)
     {
-        $candidate = Candidate::find($id);
-        if (!$candidate) {
-            return redirect()->back()->with('error', 'Candidate not found');
-        }
-
         $validator = Validator::make($request->all(), [
             'candidateNumber' => 'required|unique:candidates,candidateNumber,' . $id,
             'candidateName' => 'required',
@@ -163,7 +158,11 @@ class UserManagementController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // Update candidate details
+        $candidate = Candidate::find($id);
+        if (!$candidate) {
+            return redirect()->back()->with('error', 'Candidate not found');
+        }
+
         $candidate->candidateNumber = $request->candidateNumber;
         $candidate->candidateName = $request->candidateName;
         $candidate->age = $request->age;

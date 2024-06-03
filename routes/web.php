@@ -17,6 +17,7 @@ Route::post('/candidates', [UserManagementController::class, 'storeCandidate'])-
 Route::get('/candidates/create', [UserManagementController::class, 'createCandidate'])->middleware('isLoggedIn')->name('candidate.create');
 Route::get('/usermanage/candidate_dash', [UserManagementController::class, 'candidateDash'])->middleware('isLoggedIn')->name('usermanage.candidate_dash');
 Route::delete('/candidates/{id}', [UserManagementController::class, 'deleteCandidate'])->middleware('isLoggedIn')->name('candidate.delete');
+Route::put('/candidates/{id}', [UserManagementController::class, 'updateCandidate'])->middleware('isLoggedIn')->name('candidate.update');
 
 
 
