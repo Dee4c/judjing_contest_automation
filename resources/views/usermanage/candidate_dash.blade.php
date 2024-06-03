@@ -7,16 +7,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <style>
+
+        @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
+        body{
+            background: rgb(0,0,0);
+            background: linear-gradient(90deg, rgba(0,0,0,1) 17%, rgba(198,174,53,1) 75%);
+            font-family: 'Roboto', sans-serif;
+        }
         /* Google Font Link */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-
+    
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Poppins", sans-serif;
         }
-
+    
         .sidebar {
             position: fixed;
             left: 0;
@@ -29,29 +36,29 @@
             z-index: 99;
             transition: all 0.5s ease;
         }
-
+    
         .sidebar .logo-details {
             height: 60px;
             display: flex;
             align-items: center;
             position: relative;
-            padding-right: 50px; /* Increase right padding to accommodate the icon */
+            padding-right: 50px;
         }
-
+    
         .sidebar .logo-details .icon {
             position: absolute;
             top: 50%;
-            right: -25px; /* Position the icon outside the box */
+            right: -25px;
             transform: translateY(-50%);
             font-size: 22px;
             color: #fff;
             transition: all 0.5s ease;
         }
-
+    
         .sidebar .logo-details .icon {
-            right: 0; /* Move the icon inside the box when sidebar is open */
+            right: 0;
         }
-
+    
         .sidebar .logo-details .logo_name {
             color: #fff;
             font-size: 20px;
@@ -60,7 +67,7 @@
             opacity: 1;
             transition: all 0.5s ease;
         }
-
+    
         .sidebar .logo-details #btn {
             position: absolute;
             top: 50%;
@@ -73,11 +80,11 @@
             cursor: pointer;
             transition: all 0.5s ease;
         }
-
+    
         .sidebar .logo-details #btn {
             text-align: right;
         }
-
+    
         .sidebar i {
             color: #fff;
             height: 60px;
@@ -86,18 +93,18 @@
             text-align: center;
             line-height: 60px;
         }
-
+    
         .sidebar .nav-list {
             margin-top: 20px;
             height: 100%;
         }
-
+    
         .sidebar li {
             position: relative;
             margin: 8px 0;
             list-style: none;
         }
-
+    
         .sidebar li .tooltip {
             position: absolute;
             top: -20px;
@@ -114,7 +121,7 @@
             pointer-events: none;
             transition: 0s;
         }
-
+    
         .sidebar li:hover .tooltip {
             opacity: 1;
             pointer-events: auto;
@@ -122,11 +129,11 @@
             top: 50%;
             transform: translateY(-50%);
         }
-
+    
         .sidebar li.open .tooltip {
             display: none;
         }
-
+    
         .sidebar input {
             font-size: 15px;
             color: #fff;
@@ -140,7 +147,7 @@
             transition: all 0.5s ease;
             background: #1d1b31;
         }
-
+    
         .sidebar li a {
             display: flex;
             height: 100%;
@@ -151,11 +158,11 @@
             transition: all 0.4s ease;
             background: #11101D;
         }
-
+    
         .sidebar li a:hover {
             background: #FFF;
         }
-
+    
         .sidebar li a .links_name {
             color: #fff;
             font-size: 15px;
@@ -165,20 +172,20 @@
             pointer-events: auto;
             transition: 0.4s;
         }
-
+    
         .sidebar li a:hover .links_name,
         .sidebar li a:hover i {
             transition: all 0.5s ease;
             color: #11101D;
         }
-
+    
         .sidebar li i {
             height: 50px;
             line-height: 50px;
             font-size: 18px;
             border-radius: 12px;
         }
-
+    
         .sidebar li.profile {
             position: fixed;
             height: 60px;
@@ -190,13 +197,13 @@
             transition: all 0.5s ease;
             overflow: hidden;
         }
-
+    
         .sidebar li.profile .profile-details {
             display: flex;
             align-items: center;
             flex-wrap: nowrap;
         }
-
+    
         .sidebar li img {
             height: 45px;
             width: 45px;
@@ -204,7 +211,7 @@
             border-radius: 6px;
             margin-right: 10px;
         }
-
+    
         .sidebar li.profile .name,
         .sidebar li.profile .job {
             font-size: 15px;
@@ -212,11 +219,11 @@
             color: #fff;
             white-space: nowrap;
         }
-
+    
         .sidebar li.profile .job {
             font-size: 12px;
         }
-
+    
         .sidebar .profile #log_out {
             position: absolute;
             top: 50%;
@@ -229,7 +236,7 @@
             border-radius: 0px;
             transition: all 0.5s ease;
         }
-
+    
         .home-section {
             position: relative;
             background: #E4E9F7;
@@ -240,7 +247,7 @@
             transition: all 0.5s ease;
             z-index: 2;
         }
-
+    
         .home-section .text {
             display: inline-block;
             color: #11101d;
@@ -248,44 +255,97 @@
             font-weight: 500;
             margin: 18px
         }
-
+    
         @media (max-width: 420px) {
             .sidebar li .tooltip {
                 display: none;
             }
         }
-
+    
         /* Add custom styles here */
         .content {
             margin-left: 250px;
             padding: 20px;
         }
+    
+        /* Updated table styles */
+        table {
+            width: 100%;
+            table-layout: fixed;
+            background-color: #11101D;
+            color: #fff;
+        }
+    
+        .tbl-header {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    
+        .tbl-content {
+            height: 300px;
+            overflow-x: auto;
+            margin-top: 0px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    
+        th {
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 12px;
+            color: black;
+            text-transform: uppercase;
+        }
+    
+        td {
+            padding: 15px;
+            text-align: left;
+            vertical-align: middle;
+            font-weight: 300;
+            font-size: 12px;
+            color: #fff;
+            border-bottom: solid 1px rgba(255, 255, 255, 0.1);
+        }
+    
+        /* Added button styles */
+        .btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 5px 12px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    
+        .btn:hover {
+            background-color: #45a049;
+        }
 
         .add-judge-btn {
-            float: right;
-            margin-top: 50px;
+            margin-left: 1165px;
             margin-bottom: 20px;
         }
 
-        .table-bordered {
-            border: 1px solid #dee2e6;
-            text-align: center;
+        .title-id {
+            color: white;
+            margin: auto;
         }
 
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid #dee2e6;
+        .btn.btn-danger {
+            background-color: #ff6347; /* Red color */
         }
 
-        .table-bordered thead th,
-        .table-bordered thead td {
-            border-bottom-width: 2px;
+        .btn.btn-danger:hover {
+            background-color: red;
         }
 
         .candidate-image {
-            width: 200px;
-            height: 200px;
+            height: 100px;
+            width: 100px;
         }
+        
     </style>
 </head>
 <body>
@@ -344,6 +404,7 @@
 </div>
 <div class="content">
     <div class="container">
+        <h1 class="title-id">CANDIDATE MANAGEMENT</h1>
        <!-- Add Candidate Button -->
 <div class="add-judge-btn">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCandidateModal">Add Candidate</button>
