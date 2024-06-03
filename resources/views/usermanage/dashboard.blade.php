@@ -3,38 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <style>
-        /* Add custom styles here */
-        .sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: #dee2e6;
-            padding-top: 60px;
-            z-index: 1; /* Ensure the sidebar is above the content */
+        /* Google Font Link */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
         }
 
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: rgb(0, 0, 0);
+            background: linear-gradient(90deg, rgba(0, 0, 0, 1) 59%, rgba(198, 174, 53, 1) 99%);
+            width: 250px;
+            padding: 6px 14px;
+            z-index: 99;
+            transition: all 0.5s ease;
+        }
+
+        .sidebar .logo-details {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-right: 50px; /* Increase right padding to accommodate the icon */
+        }
+
+        .sidebar .logo-details .icon {
+            position: absolute;
+            top: 50%;
+            right: -25px; /* Position the icon outside the box */
+            transform: translateY(-50%);
+            font-size: 22px;
+            color: #fff;
+            transition: all 0.5s ease;
+        }
+
+        .sidebar .logo-details .icon {
+            right: 0; /* Move the icon inside the box when sidebar is open */
+        }
+
+        .sidebar .logo-details .logo_name {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+            margin-left: 40px;
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+
+        .sidebar .logo-details #btn {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            font-size: 22px;
+            transition: all 0.4s ease;
+            font-size: 23px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .sidebar .logo-details #btn {
+            text-align: right;
+        }
+
+        .sidebar i {
+            color: #fff;
+            height: 60px;
+            min-width: 50px;
+            font-size: 28px;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        .sidebar .nav-list {
+            margin-top: 20px;
+            height: 100%;
+        }
+
+        .sidebar li {
+            position: relative;
+            margin: 8px 0;
+            list-style: none;
+        }
+
+        .sidebar li .tooltip {
+            position: absolute;
+            top: -20px;
+            left: calc(100% + 15px);
+            z-index: 3;
+            background: #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 400;
+            opacity: 0;
+            white-space: nowrap;
+            pointer-events: none;
+            transition: 0s;
+        }
+
+        .sidebar li:hover .tooltip {
+            opacity: 1;
+            pointer-events: auto;
+            transition: all 0.4s ease;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .sidebar li.open .tooltip {
+            display: none;
+        }
+
+        .sidebar input {
+            font-size: 15px;
+            color: #fff;
+            font-weight: 400;
+            outline: none;
+            height: 50px;
+            width: 100%;
+            width: 50px;
+            border: none;
+            border-radius: 12px;
+            transition: all 0.5s ease;
+            background: #1d1b31;
+        }
+
+        .sidebar li a {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            border-radius: 12px;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            background: #11101D;
+        }
+
+        .sidebar li a:hover {
+            background: #FFF;
+        }
+
+        .sidebar li a .links_name {
+            color: #fff;
+            font-size: 15px;
+            font-weight: 400;
+            white-space: nowrap;
+            opacity: 1;
+            pointer-events: auto;
+            transition: 0.4s;
+        }
+
+        .sidebar li a:hover .links_name,
+        .sidebar li a:hover i {
+            transition: all 0.5s ease;
+            color: #11101D;
+        }
+
+        .sidebar li i {
+            height: 50px;
+            line-height: 50px;
+            font-size: 18px;
+            border-radius: 12px;
+        }
+
+        .sidebar li.profile {
+            position: fixed;
+            height: 60px;
+            width: 78px;
+            left: 0;
+            bottom: -8px;
+            padding: 10px 14px;
+            background: #1d1b31;
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .sidebar li.profile .profile-details {
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .sidebar li img {
+            height: 45px;
+            width: 45px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 10px;
+        }
+
+        .sidebar li.profile .name,
+        .sidebar li.profile .job {
+            font-size: 15px;
+            font-weight: 400;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .sidebar li.profile .job {
+            font-size: 12px;
+        }
+
+        .sidebar .profile #log_out {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            background: #1d1b31;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 0px;
+            transition: all 0.5s ease;
+        }
+
+        .home-section {
+            position: relative;
+            background: #E4E9F7;
+            min-height: 100vh;
+            top: 0;
+            left: 250px;
+            width: calc(100% - 250px);
+            transition: all 0.5s ease;
+            z-index: 2;
+        }
+
+        .home-section .text {
+            display: inline-block;
+            color: #11101d;
+            font-size: 25px;
+            font-weight: 500;
+            margin: 18px
+        }
+
+        @media (max-width: 420px) {
+            .sidebar li .tooltip {
+                display: none;
+            }
+        }
+
+        /* Add custom styles here */
         .content {
             margin-left: 250px;
             padding: 20px;
         }
 
-        .navbar {
-            padding: 10px 0;
-            position: fixed; /* Fix the navbar at the top */
-            width: 100%; /* Ensure the navbar spans the full width */
-            z-index: 2; /* Ensure the navbar is above the sidebar */
-            background-color: #fff; /* Ensure the navbar is visible */
+        .add-judge-btn {
+            float: right;
+            margin-top: 50px;
+            margin-bottom: 20px;
         }
-        
-        /* Add border to table */
+
         .table-bordered {
             border: 1px solid #dee2e6;
+            text-align: center;
         }
 
         .table-bordered th,
@@ -46,185 +281,204 @@
         .table-bordered thead td {
             border-bottom-width: 2px;
         }
-
-        /* Add style for the Add Judge button */
-        .add-judge-btn {
-            float: right;
-            margin-top: 50px;
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid"> <!-- Center the content -->
-            <span class="navbar-brand mb-0 h1">Welcome to Admin Dashboard</span>
-        </div>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <form action="{{ route('logout') }}" method="GET">
-                        <button type="submit" class="btn btn-danger nav-link">Logout</button>
-                    </form>                    
-                </li>
-            </ul>
-        </div>
-    </nav>
-    
-    <div class="sidebar">
-        <ul class="nav flex-column">
-            <!-- Add sidebar links here -->
-            <!-- Example link -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('usermanage.dashboard')}}">User Management</a>
-                <a class="nav-link" href="{{ route('usermanage.candidate_dash') }}">Candidate Management</a>
-                <a class="nav-link" href="#">Reports</a>
-            </li>
-        </ul>
+<div class="sidebar">
+    <div class="logo-details">
+        <div class="logo_name">Miss Q</div>
     </div>
-
-    <div class="content">
-        <div class="container">
-            <!-- Add Judge Button -->
-            <div class="add-judge-btn">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addJudgeModal">Add Judge</button>
-            </div>
-            
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Name</th>
-                        <th>Action</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($users as $user)
-                    <tr>
-                        <td>{{ $user->username }}</td>
-                        <td>{{ $user->password }}</td> 
-                        <td>{{ $user->name }}</td> 
-                        <td>
-                            <!-- Edit button -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->id }}">
-                                Edit
-                            </button>
-
-                            <!-- Edit Account Modal -->
-                            <div class="modal fade" id="editModal{{ $user->id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel">Edit Account</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <!-- Edit form -->
-                                            <form action="{{ route('user.update', $user->id) }}" method="POST">
-                                                @csrf
-                                                @method('PUT')
-                                                <div class="form-group">
-                                                    <label for="edit_username">Username</label>
-                                                    <input type="text" class="form-control" id="edit_username" name="edit_username" value="{{ $user->username }}" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="edit_password">Password</label>
-                                                    <input type="password" class="form-control" id="edit_password" name="edit_password" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="edit_name">Name</label>
-                                                    <input type="text" class="form-control" id="edit_name" name="edit_name" value="{{ $user->name }}" required>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Delete button -->
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $user->id }}">
-                                Delete
-                            </button>
-                    
-                            <!-- Delete Account Modal -->
-                            <div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel">Delete Account</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete the account for {{ $user->username }}?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <form action="{{ route('user.delete', $user->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-    
-    <!-- Add Judge Modal -->
-    <div class="modal fade" id="addJudgeModal" tabindex="-1" aria-labelledby="addJudgeModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addJudgeModalLabel">Add Judge</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <ul class="nav-list">
+        <li>
+            <a href="{{route('usermanage.dashboard')}}">
+                <i class='bx bx-user'></i>
+                <span class="links_name">User Management</span>
+            </a>
+            <span class="tooltip">User Management</span>
+        </li>
+        <li>
+            <a href="{{ route('usermanage.candidate_dash')}}">
+                <i class='bx bxs-user-check'></i>
+                <span class="links_name">Candidates</span>
+            </a>
+            <span class="tooltip">Candidate Management</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-edit'></i>
+                <span class="links_name">Preliminaries</span>
+            </a>
+            <span class="tooltip">Preliminaries</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-line-chart'></i>
+                <span class="links_name">Semi-Finals</span>
+            </a>
+            <span class="tooltip">Semi-Finals</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bxs-crown'></i>
+                <span class="links_name">Finals</span>
+            </a>
+            <span class="tooltip">Finals</span>
+        </li>
+        <li class="profile">
+            <div class="profile-details">
+                <img src="profile.jpg" alt="profileImg">
+                <div class="name_job">
+                    <div class="name">Admin</div>
                 </div>
-                <div class="modal-body" id="judgeFormsContainer">
-                    <!-- Initial Judge Form -->
-                    <form id="addJudgeForm" method="POST" action="{{ route('addJudge') }}">
-                        @csrf
-                        @if(Session::has('success'))
-                        <div class="alert alert-success">{{ Session::get('success') }}</div>
-                        @endif
-                        @if(Session::has('fail'))
-                        <div class="alert alert-danger">{{ Session::get('fail') }}</div>
-                        @endif
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" name="username" required autocomplete="username" autofocus>
-                            <div id="usernameError" class="invalid-feedback"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" name="password" required autocomplete="new-password">
-                            <div id="passwordError" class="invalid-feedback"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" name="name" required autocomplete="new-name">
-                            <div id="nameError" class="invalid-feedback"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Add Judge</button>
-                    </div>
-                </form>
             </div>
+            <a href="{{ route('logout') }}" class="logout-link">
+            <i class='bx bx-log-out' id="log_out"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="content">
+    <div class="container">
+        <!-- Add Judge Button -->
+        <div class="add-judge-btn">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addJudgeModal">Add Judge</button>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Replace the code below with your user data retrieval and display logic -->
+            @foreach($users as $user)
+                <tr>
+                    <td>{{ $user->username }}</td>
+                    <td>{{ $user->password }}</td>
+                    <td>{{ $user->name }}</td>
+                    <td>
+                        <!-- Edit button -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->id }}">
+                            Edit
+                        </button>
+
+                        <!-- Edit Account Modal -->
+                        <div class="modal fade" id="editModal{{ $user->id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModalLabel">Edit Account</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Edit form -->
+                                        <form action="{{ route('user.update', $user->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="form-group">
+                                                <label for="edit_username">Username</label>
+                                                <input type="text" class="form-control" id="edit_username" name="edit_username" value="{{ $user->username }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="edit_password">Password</label>
+                                                <input type="password" class="form-control" id="edit_password" name="edit_password" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="edit_name">Name</label>
+                                                <input type="text" class="form-control" id="edit_name" name="edit_name" value="{{ $user->name }}" required>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Delete button -->
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $user->id }}">
+                            Delete
+                        </button>
+
+                        <!-- Delete Account Modal -->
+                        <div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel">Delete Account</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete the account for {{ $user->username }}?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <form action="{{ route('user.delete', $user->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Judge Modal -->
+<div class="modal fade" id="addJudgeModal" tabindex="-1" aria-labelledby="addJudgeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addJudgeModalLabel">Add Judge</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="judgeFormsContainer">
+                <!-- Initial Judge Form -->
+                <form id="addJudgeForm" method="POST" action="{{ route('addJudge') }}">
+                    @csrf
+                    @if(Session::has('success'))
+                        <div class="alert alert-success">{{ Session::get('success') }}</div>
+                    @endif
+                    @if(Session::has('fail'))
+                        <div class="alert alert-danger">{{ Session::get('fail') }}</div>
+                    @endif
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" name="username" required autocomplete="username" autofocus>
+                        <div id="usernameError" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" name="password" required autocomplete="new-password">
+                        <div id="passwordError" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" name="name" required autocomplete="new-name">
+                        <div id="nameError" class="invalid-feedback"></div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Add Judge</button>
+            </div>
+            </form>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Database\Seeders\AdminUserSeeder; // Import the AdminUserSeeder
 
@@ -19,9 +18,9 @@ class UserAuthenticationController extends Controller
     
             // Redirect to the appropriate dashboard based on user's role
             if ($user && $user->username === 'admin') {
-                return redirect()->route('usermanage/dashboard');
+                return redirect()->route('usermanage.dashboard');
             } else {
-                return redirect('judge/dashboard');
+                return redirect('./login');
             }
         } else {
             // If not logged in, show the login page
@@ -47,7 +46,7 @@ class UserAuthenticationController extends Controller
         $user = User::where('username', $request->username)->first();
 
         if ($user) {
-            if ($user->username === 'admin' && Hash::check($request->password, $user->password)) {
+            if ($user->username === 'admin' && $request->password === $user->password) {
                 // If the user is admin and password matches, redirect to admin dashboard
                 $request->session()->put('loginId', $user->id);
                 return redirect('usermanage/dashboard');
