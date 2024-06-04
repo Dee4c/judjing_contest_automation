@@ -372,7 +372,7 @@
             <span class="tooltip">Candidate Management</span>
         </li>
         <li>
-            <a href="#">
+            <a href="{{ route('usermanage.preliminary_dash')}}">
                 <i class='bx bx-edit'></i>
                 <span class="links_name">Preliminaries</span>
             </a>
@@ -422,9 +422,9 @@
             <th>Name</th>
             <th>Age</th>
             <th>Address</th>
-            <th>Waist</th>
-            <th>Hips</th>
-            <th>Chest</th>
+            <th>Waist<br> (inch)</th>
+            <th>Hips<br> (inch)</th>
+            <th>Chest<br> (inch)</th>
             <th>Action</th> <!-- Assuming you want to keep the action column -->
         </tr>
     </thead>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
-use Database\Seeders\AdminUserSeeder; // Import the AdminUserSeeder
+use App\Models\Candidate;
 
 class UserAuthenticationController extends Controller
 {
@@ -28,32 +28,29 @@ class UserAuthenticationController extends Controller
         }
     }
 
-    public function loginUser(Request $request)
+        public function loginUser(Request $request)
     {
         $request->validate([
             'username' => 'required',
-            'password' => 'required|min:5|max:12',
+            'password' => 'required',
         ]);
 
-        // Check if the admin user exists
-        $adminUser = User::where('username', 'admin')->first();
-        if (!$adminUser) {
-            // If admin user doesn't exist, run the seeder
-            $seeder = new AdminUserSeeder();
-            $seeder->run();
-        }
-
+        // Attempt to find the user by username
         $user = User::where('username', $request->username)->first();
 
         if ($user) {
-            if ($user->username === 'admin' && $request->password === $user->password) {
-                // If the user is admin and password matches, redirect to admin dashboard
-                $request->session()->put('loginId', $user->id);
-                return redirect('usermanage/dashboard');
-            } elseif ($request->password === $user->password) {
-                // For other users, if password matches, redirect to judge dashboard
-                $request->session()->put('loginId', $user->id);
-                return redirect('judge/judgeDashboard');
+            // Check if the provided password matches the user's password
+            if ($request->password === $user->password) {
+                // Log the user in based on their role
+                if ($user->username === 'admin') {
+                    // If the user is admin, redirect to admin dashboard
+                    $request->session()->put('loginId', $user->id);
+                    return redirect('usermanage/dashboard');
+                } else {
+                    // For other users, redirect to judge dashboard
+                    $request->session()->put('loginId', $user->id);
+                    return redirect('judge/judgeDashboard');
+                }
             } else {
                 // Flash error message for incorrect password
                 Session::flash('fail', 'Password does not match');
@@ -77,11 +74,5 @@ class UserAuthenticationController extends Controller
         Session::forget('loginId'); // Remove 'loginId' from session
         return redirect('login'); // Redirect to the login page after logout
     }
-
-    public function judgeDashboard(){
-        return view('judge.judge_dashboard');
-    }
-    
-    
 }
 

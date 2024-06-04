@@ -365,7 +365,7 @@
             <span class="tooltip">Candidate Management</span>
         </li>
         <li>
-            <a href="#">
+            <a href="{{ route('usermanage.preliminary_dash') }}">
                 <i class='bx bx-edit'></i>
                 <span class="links_name">Preliminaries</span>
             </a>

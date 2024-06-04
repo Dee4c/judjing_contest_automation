@@ -14,6 +14,10 @@ class Candidate extends Model
         'age',
         'candidateAddress',
         'candidateStatistics',
-        // Add other attributes as needed
     ];
+    
+    public function scores()
+    {
+        return $this->hasMany(Score::class, 'candidate_number', 'candidateNumber');
+    }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Judge Dashboard</title>
+    <title>Preliminary Table</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <style>
@@ -275,55 +275,45 @@
             background-color: #11101D;
             color: #fff;
         }
-
+    
         .tbl-header {
             background-color: rgba(255, 255, 255, 0.3);
         }
-
+    
         .tbl-content {
             height: 300px;
             overflow-x: auto;
             margin-top: 0px;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
-
+    
         th {
-            padding: 15px; /* Adjusted padding for header */
-            text-align: center; /* Center align header text */
+            padding: 20px 15px;
+            text-align: left;
             font-weight: 500;
-            font-size: 14px; /* Increased font size */
-            color: #fff;
+            font-size: 12px;
+            color: black;
             text-transform: uppercase;
         }
-
+    
         td {
-            padding: 15px; /* Adjusted padding for table cells */
-            text-align: center; /* Center align cell text */
+            padding: 15px;
+            text-align: left;
             vertical-align: middle;
             font-weight: 300;
-            font-size: 14px; /* Increased font size */
+            font-size: 12px;
             color: #fff;
             border-bottom: solid 1px rgba(255, 255, 255, 0.1);
         }
-
-        /* Adjusted table responsive styles */
-        .table-responsive {
-            width: 80%; /* Adjust table width */
-            margin:auto; /* Center table */
-            overflow-x: auto;
-            padding: 20px; /* Add padding for better spacing */
-            margin-left: 300px;
-            display: none; /* Initially hide the table */
-        }
-
+    
         .title-id {
             color: white;
+            margin: auto;
         }
 
         .form-select {
             width: 200px; /* Adjust the width as needed */
         }
-
     </style>
 </head>
 <body>
@@ -333,25 +323,39 @@
     </div>
     <ul class="nav-list">
         <li>
-            <a href="{{ route('judge.judge_dashboard') }}">
+            <a href="{{route('usermanage.dashboard')}}">
                 <i class='bx bx-user'></i>
-                <span class="links_name">PRELIMINARIES</span>
+                <span class="links_name">User Management</span>
             </a>
-            <span class="tooltip">PRELIMINARIES</span>
+            <span class="tooltip">User Management</span>
         </li>
         <li>
-            <a href="#">
+            <a href="{{route('usermanage.candidate_dash')}}">
                 <i class='bx bxs-user-check'></i>
-                <span class="links_name">SEMI-FINALS</span>
+                <span class="links_name">Candidates</span>
             </a>
-            <span class="tooltip">SEMI-FINALS</span>
+            <span class="tooltip">Candidate Management</span>
         </li>
         <li>
             <a href="#">
                 <i class='bx bx-edit'></i>
-                <span class="links_name">FINALS</span>
+                <span class="links_name">Preliminaries</span>
             </a>
-            <span class="tooltip">FINALS</span>
+            <span class="tooltip">Preliminaries</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-line-chart'></i>
+                <span class="links_name">Semi-Finals</span>
+            </a>
+            <span class="tooltip">Semi-Finals</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bxs-crown'></i>
+                <span class="links_name">Finals</span>
+            </a>
+            <span class="tooltip">Finals</span>
         </li>
         <li class="profile">
             <div class="profile-details">
@@ -369,122 +373,134 @@
 
 <div class="content">
     <div class="container">
-        <h1 class="title-id">Judge Dashboard</h1>
+        <h1 class="title-id">Preliminary Table Over all Score</h1>
+        <br>
         <div class="dropdown">
             <h2 class="title-id">Category</h2>
             <select class="form-select" id="categorySelect">
                 <option value="">Select Category</option>
                 <option value="pre_interview">Pre-Interview</option>
-                <option value="swim_suit">Swimsuit</option>
+                <option value="swimsuit">Swimsuit</option>
                 <option value="gown">Gown</option>
-            </select>            
+            </select>
         </div>
         <br>
-       <!-- Container divs for each category -->
         <div id="pre_interview_table" class="category-table" style="display: none;">
-            <form id="pre_interview_form" action="{{ route('score.store') }}" method="POST">
-                @csrf
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Candidate Number</th>
-                            <th>Composure <br>(50%)</th>
-                            <th>Poise, Grace and Projection <br>(50%)</th>
-                            <th>Judge Name</th>
-                            <th>Category</th>
-                            <th>Enter Candidate ID</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pre_interview_table_body">
-                        <!-- Table content for pre-interview category will be dynamically populated here -->
-                        @foreach($candidates as $candidate)
-                        <tr>
-                            <td>{{ $candidate->candidateNumber }}</td>
-                            <td>
-                                <input type="number" name="composure[{{ $candidate->id }}]" min="0" max="50" required>
-                            </td>
-                            <td>
-                                <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="0" max="50" required>
-                            </td>
-                            <td>
-                                <input type="text" name="judge_name[{{ $candidate->id }}]" required>
-                            </td>
-                            <td>
-                                <select name="category[{{ $candidate->id }}]" required>
-                                    <option value="">Select Category</option>
-                                    <option value="Pre-Interview">Pre-Interview</option>
-                                    <!-- Add more options as needed -->
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" name="candidate_id_for_scoring[]" required>
-                                <!-- Hidden input field to store the retrieved candidate ID -->
-                                <input type="hidden" name="candidate_id[]" value="{{ $candidate->id }}">
-                                <!-- Include the candidate number field here -->
-                                <input type="hidden" name="candidate_number[{{ $candidate->id }}]" value="{{ $candidate->candidateNumber }}">
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>                    
-                </table>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>      
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Candidate Number</th>
+                        <th>Composure</th>
+                        <th>Poise, Grace and Projection</th>
+                        <th>Judge Name</th>
+                    </tr>
+                </thead>
+                <tbody id="pre_interview_table_body">
+                    <!-- Loop through candidates and populate table rows -->
+                    @foreach($candidates as $candidate)
+                    <tr>
+                        <td>{{ $candidate->candidateNumber }}</td>
+                        <td>
+                            @foreach($candidate->scores as $score)
+                                {{ $score->composure }}
+                            @endforeach
+                        </td>
+                        <td>
+                            @foreach($candidate->scores as $score)
+                                {{ $score->poise_grace_projection }}
+                            @endforeach
+                        </td>
+                        <td>
+                            @foreach($candidate->scores as $score)
+                                {{ $score->judge_name }}
+                            @endforeach
+                        </td>
+                    </tr>
+                @endforeach
+                
+                </tbody>
+            </table>
         </div>
-    </div>
+        
+        <div id="swimsuit_table" class="category-table" style="display: none;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Candidate Number</th>
+                        <th>Contestant</th>
+                        <th>Swimsuit Score</th>
+                    </tr>
+                </thead>
+                <tbody id="swimsuit_table_body">
+                    <!-- Table content for swimsuit category will be dynamically populated here -->
+                </tbody>
+            </table>
+        </div>
+         <div id="swimsuit_table" class="category-table" style="display: none;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Candidate Number</th>
+                        <th>Contestant</th>
+                        <th>Swimsuit Score</th>
+                    </tr>
+                </thead>
+                <tbody id="swimsuit_table_body">
+                    <!-- Table content for swimsuit category will be dynamically populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        </table>
+        <div id="gown_table" class="category-table" style="display: none;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Candidate Number</th>
+                        <th>Contestant</th>
+                        <th>Gown Score</th>
+                    </tr>
+                </thead>
+                <tbody id="gown_table_body">
+                    <!-- Table content for gown category will be dynamically populated here -->
+                </tbody>
+            </table>
+     </div>
+     <br>
+     {{-- <table class="table table-bordered">
+         <thead>
+             <tr>
+                 <th>Candidate Number</th>
+                 <th>Pre-Interview</th>
+                 <th>Swimsuit</th>
+                 <th>Gown</th>
+                 <th>Total Score</th>
+                 <th>Rank</th>
+             </tr>
+         </thead>
+         <tbody>
+             <!-- Placeholder rows for now -->
+             <tr>
+                 <td>1</td>
+                 <td>80</td>
+                 <td>85</td>
+                 <td>90</td>
+                 <td>255</td>
+                 <td>1</td>
+             </tr>
+             <tr>
+                 <td>2</td>
+                 <td>75</td>
+                 <td>80</td>
+                 <td>85</td>
+                 <td>240</td>
+                 <td>2</td>
+             </tr>
+             <!-- Add more rows for each candidate -->
+         </tbody>
+     </table> --}}
 </div>
 
- {{-- <!-- Container divs for each category -->
- <div id="swim_suit_table" class="category-table" style="display: none;">
-    <form id="swim_suit_form" action="{{ route('score.store') }}" method="POST">
-        @csrf
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Candidate Number</th>
-                    <th>Composure <br>(50%)</th>
-                    <th>Poise, Grace and Projection <br>(50%)</th>
-                    <th>Judge Name</th>
-                    <th>Category</th>
-                    <th>Enter Candidate ID</th>
-                </tr>
-            </thead>
-            <tbody id="swim_suit_table_body">
-                <!-- Table content for swim_suit category will be dynamically populated here -->
-                @foreach($candidates as $candidate)
-                <tr>
-                    <td>{{ $candidate->candidateNumber }}</td>
-                    <td>
-                        <input type="number" name="composure[{{ $candidate->id }}]" min="0" max="50" required>
-                    </td>
-                    <td>
-                        <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="0" max="50" required>
-                    </td>
-                    <td>
-                        <input type="text" name="judge_name[{{ $candidate->id }}]" required>
-                    </td>
-                    <td>
-                        <select name="category[{{ $candidate->id }}]" required>
-                            <option value="">Select Category</option>
-                            <option value="Swim Suit">Swim Suit</option>
-                            <!-- Add more options as needed -->
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" name="candidate_id_for_scoring[]" required>
-                        <!-- Hidden input field to store the retrieved candidate ID -->
-                        <input type="hidden" name="candidate_id[]" value="{{ $candidate->id }}">
-                        <!-- Include the candidate number field here -->
-                        <input type="hidden" name="candidate_number[{{ $candidate->id }}]" value="{{ $candidate->candidateNumber }}">
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>                    
-        </table>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>      
-</div>
-</div>
-</div> --}}
 
 <script>
     document.getElementById('categorySelect').addEventListener('change', function() {
@@ -497,6 +513,6 @@
         document.getElementById(selectedCategory + '_table').style.display = 'block';
     });
 </script>
-</body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
 </html>

@@ -18,6 +18,15 @@ Route::get('/candidates/create', [UserManagementController::class, 'createCandid
 Route::get('/usermanage/candidate_dash', [UserManagementController::class, 'candidateDash'])->middleware('isLoggedIn')->name('usermanage.candidate_dash');
 Route::delete('/candidates/{id}', [UserManagementController::class, 'deleteCandidate'])->middleware('isLoggedIn')->name('candidate.delete');
 Route::put('/candidates/{id}', [UserManagementController::class, 'updateCandidate'])->middleware('isLoggedIn')->name('candidate.update');
+Route::get('/usermanage/preliminary_dash', [UserManagementController::class, 'preliminaryDash'])->name('usermanage.preliminary_dash');
+Route::get('/judge/judgeDashboard', [UserManagementController::class, 'judgeDashboard'])->middleware('isLoggedIn')->name('judge.judge_dashboard');
+Route::post('/scores', [UserManagementController::class, 'storeScore'])->middleware('isLoggedIn')->name('score.store');
+Route::get('/pre-interview-scores', [UserManagementController::class, 'getPreInterviewScores']);
+
+
+
+
+
 
 
 

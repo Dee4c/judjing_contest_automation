@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use App\Models\Candidate;
+use App\Models\Score;
+
 
 class UserManagementController extends Controller
 {
@@ -20,7 +22,7 @@ class UserManagementController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'username' => 'required|unique:users',
-            'password' => 'required|min:5|max:12',
+            'password' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -31,7 +33,7 @@ class UserManagementController extends Controller
         $user->name = $request->name;
         $user->username = $request->username;
         $user->password = $request->password;
-        $user->role = 'judge'; // Assign the role 'judge' to the user
+        $user->role = 'judge';
         $user->save();
 
         Session::flash('success', 'Judge added successfully');
@@ -57,7 +59,7 @@ class UserManagementController extends Controller
         $request->validate([
             'edit_name' => 'required',
             'edit_username' => 'required',
-            'edit_password' => 'required|min:5|max:12',
+            'edit_password' => 'required',
         ]);
 
         $user = User::find($id);
@@ -188,4 +190,65 @@ class UserManagementController extends Controller
         return redirect()->route('usermanage.candidate_dash')->with('success', 'Candidate updated successfully');
     }
 
-}
+    public function preliminaryDash()
+    {
+        // Fetch all candidates with their associated scores
+        $candidates = Candidate::with('scores')->get();
+        
+        // Pass candidate data to the view
+        return view('usermanage.preliminary_dash', ['candidates' => $candidates]);
+    }
+
+    
+
+    public function judgeDashboard()
+    {
+        // Fetch all candidates
+        $candidates = Candidate::all();
+        
+        // Pass candidate data to the view
+        return view('judge.judge_dashboard', ['candidates' => $candidates]);
+    }
+
+    
+    public function storeScore(Request $request)
+    {
+        $request->validate([
+            'candidate_number' => 'required|array',
+            'composure' => 'required|array',
+            'poise_grace_projection' => 'required|array',
+            'judge_name' => 'required|array',
+            'category' => 'required|array', // New validation rule for category
+            'composure.*' => 'required|integer|min:0|max:50',
+            'poise_grace_projection.*' => 'required|integer|min:0|max:50',
+            'judge_name.*' => 'required|string|max:255',
+            'category.*' => 'required|string', // Validation for category
+        ]);
+
+        $candidateNumbers = $request->input('candidate_number');
+        $composures = $request->input('composure');
+        $poiseGraceProjections = $request->input('poise_grace_projection');
+        $judgeNames = $request->input('judge_name');
+        $categories = $request->input('category'); // Retrieve category input
+
+        $scores = [];
+
+        foreach ($candidateNumbers as $key => $candidateNumber) {
+            $scores[] = [
+                'candidate_number' => $candidateNumber,
+                'composure' => $composures[$key],
+                'poise_grace_projection' => $poiseGraceProjections[$key],
+                'judge_name' => $judgeNames[$key],
+                'category' => $categories[$key], // Include category in the score data
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        Score::insert($scores);
+
+        return redirect()->back()->with('success', 'Scores added successfully');
+    }
+
+} 
+
