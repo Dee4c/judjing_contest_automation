@@ -269,12 +269,12 @@
         }
     
         /* Updated table styles */
-        table {
+        /* table {
             width: 100%;
             table-layout: fixed;
             background-color: #11101D;
             color: #fff;
-        }
+        } */
 
         .tbl-header {
             background-color: rgba(255, 255, 255, 0.3);
@@ -308,12 +308,12 @@
 
         /* Adjusted table responsive styles */
         .table-responsive {
-            width: 80%; /* Adjust table width */
-            margin:auto; /* Center table */
+            width: 80%; 
+            margin:auto;
             overflow-x: auto;
-            padding: 20px; /* Add padding for better spacing */
+            padding: 20px; 
             margin-left: 300px;
-            display: none; /* Initially hide the table */
+            display: none; 
         }
 
         .title-id {
@@ -324,6 +324,25 @@
             width: 200px; /* Adjust the width as needed */
         }
 
+        .category-table-pre-interview {
+            width: 1300px;
+        }
+
+        .category-table-swim-suit {
+            width: 1300px;
+            margin-left: 317px;
+        }
+
+        .category-table-gown{
+            width: 1300px;
+            margin-left: 317px;
+        }
+
+        .category-table {
+            width: 1300px;
+            margin-left: 300px;
+            display: none; /* Hide all tables by default */
+        }
     </style>
 </head>
 <body>
@@ -381,7 +400,7 @@
         </div>
         <br>
        <!-- Container divs for each category -->
-        <div id="pre_interview_table" class="category-table" style="display: none;">
+        <div id="pre_interview_table" class="category-table-pre-interview" style="display: none;">
             <form id="pre_interview_form" action="{{ route('score.store') }}" method="POST">
                 @csrf
                 <table class="table table-bordered">
@@ -433,8 +452,8 @@
     </div>
 </div>
 
- {{-- <!-- Container divs for each category -->
- <div id="swim_suit_table" class="category-table" style="display: none;">
+ <!-- Container divs for each category -->
+ <div id="swim_suit_table" class="category-table-swim-suit" style="display: none;">
     <form id="swim_suit_form" action="{{ route('score.store') }}" method="POST">
         @csrf
         <table class="table table-bordered">
@@ -484,19 +503,109 @@
     </form>      
 </div>
 </div>
-</div> --}}
+</div>
+
+<div id="gown_table" class="category-table-gown" style="display: none;">
+    <form id="gown_form" action="{{ route('score.store') }}" method="POST">
+        @csrf
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Candidate Number</th>
+                    <th>Composure <br>(50%)</th>
+                    <th>Poise, Grace and Projection <br>(50%)</th>
+                    <th>Judge Name</th>
+                    <th>Category</th>
+                    <th>Enter Candidate ID</th>
+                </tr>
+            </thead>
+            <tbody id="gown_table_body">
+                <!-- Table content for gown category will be dynamically populated here -->
+                @foreach($candidates as $candidate)
+                <tr>
+                    <td>{{ $candidate->candidateNumber }}</td>
+                    <td>
+                        <input type="number" name="composure[{{ $candidate->id }}]" min="0" max="50" required>
+                    </td>
+                    <td>
+                        <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="0" max="50" required>
+                    </td>
+                    <td>
+                        <input type="text" name="judge_name[{{ $candidate->id }}]" required>
+                    </td>
+                    <td>
+                        <select name="category[{{ $candidate->id }}]" required>
+                            <option value="">Select Category</option>
+                            <option value="Gown">Gown</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="candidate_id_for_scoring[]" required>
+                        <!-- Hidden input field to store the retrieved candidate ID -->
+                        <input type="hidden" name="candidate_id[]" value="{{ $candidate->id }}">
+                        <!-- Include the candidate number field here -->
+                        <input type="hidden" name="candidate_number[{{ $candidate->id }}]" value="{{ $candidate->candidateNumber }}">
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>                    
+        </table>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>      
+</div>
+
 
 <script>
-    document.getElementById('categorySelect').addEventListener('change', function() {
-        var selectedCategory = this.value;
-        // Hide all category tables
-        document.querySelectorAll('.category-table').forEach(function(table) {
-            table.style.display = 'none';
+    // Flag to keep track of form submission status
+    var formSubmitted = false;
+
+    // Function to disable the select button after submission
+    function disableSelectButton() {
+        // Get the select button
+        var selectButton = document.getElementById('categorySelect');
+        // Disable the select button
+        selectButton.disabled = true;
+    }
+
+    // Event listener for form submission
+    document.querySelectorAll('form').forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            // Prevent the default form submission behavior
+            event.preventDefault();
+            // Set the form submission flag to true
+            formSubmitted = true;
+            // Call the function to disable the select button
+            disableSelectButton();
+            // Submit the form
+            this.submit();
         });
-        // Show the selected category table
-        document.getElementById(selectedCategory + '_table').style.display = 'block';
+    });
+
+    document.getElementById('categorySelect').addEventListener('change', function() {
+        // Check if the form has been submitted
+        if (formSubmitted) {
+            // If the form has been submitted, disable the select button
+            this.disabled = true;
+        } else {
+            var selectedCategory = this.value;
+            // Hide all category tables
+            document.querySelectorAll('.category-table').forEach(function(table) {
+                table.style.display = 'none';
+            });
+            // Show the selected category table
+            if (selectedCategory === 'pre_interview') {
+                document.getElementById('pre_interview_table').style.display = 'block';
+            } else if (selectedCategory === 'swim_suit') {
+                document.getElementById('swim_suit_table').style.display = 'block';
+            } else if (selectedCategory === 'gown') {
+                document.getElementById('gown_table').style.display = 'block';
+            }
+        }
     });
 </script>
+
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>
