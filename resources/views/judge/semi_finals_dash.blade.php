@@ -359,7 +359,7 @@
             <span class="tooltip">PRELIMINARIES</span>
         </li>
         <li>
-            <a href="{{route('judge.semi_finals_dash')}}">
+            <a href="#">
                 <i class='bx bxs-user-check'></i>
                 <span class="links_name">SEMI-FINALS</span>
             </a>
@@ -388,7 +388,7 @@
 
 <div class="content">
     <div class="container">
-        <h1 class="title-id">PRELIMINARY TABLE</h1>
+        <h1 class="title-id">SEMI-FINALS TABLE</h1>
         <div class="dropdown">
             <h2 class="title-id">Category</h2>
             <select class="form-select" id="categorySelect">
@@ -399,8 +399,7 @@
             </select>            
         </div>
         <br>
-
-        <!--Pre-Interview Form-->
+       <!-- Container divs for each category -->
         <div id="pre_interview_table" class="category-table-pre-interview" style="display: none;">
             <form id="pre_interview_form" action="{{ route('score.store') }}" method="POST">
                 @csrf
@@ -411,6 +410,7 @@
                             <th>Composure <br>(50%)</th>
                             <th>Poise, Grace and Projection <br>(50%)</th>
                             <th>Judge Name</th>
+                            <th>Category</th>
                             <th>Enter Candidate ID</th>
                         </tr>
                     </thead>
@@ -429,6 +429,13 @@
                                 <input type="text" name="judge_name[{{ $candidate->id }}]" required>
                             </td>
                             <td>
+                                <select name="category[{{ $candidate->id }}]" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Pre-Interview">Pre-Interview</option>
+                                    <!-- Add more options as needed -->
+                                </select>
+                            </td>
+                            <td>
                                 <input type="text" name="candidate_id_for_scoring[]" required>
                                 <!-- Hidden input field to store the retrieved candidate ID -->
                                 <input type="hidden" name="candidate_id[]" value="{{ $candidate->id }}">
@@ -445,10 +452,9 @@
     </div>
 </div>
 
-
-<!--Swim Suit Form-->
-<div id="swim_suit_table" class="category-table-swim-suit" style="display: none;">
-    <form id="swim_suit_form" action="{{ route('swimsuit-score.store') }}" method="POST">
+ <!-- Container divs for each category -->
+ <div id="swim_suit_table" class="category-table-swim-suit" style="display: none;">
+    <form id="swim_suit_form" action="{{ route('score.store') }}" method="POST">
         @csrf
         <table class="table table-bordered">
             <thead>
@@ -457,6 +463,7 @@
                     <th>Composure <br>(50%)</th>
                     <th>Poise, Grace and Projection <br>(50%)</th>
                     <th>Judge Name</th>
+                    <th>Category</th>
                     <th>Enter Candidate ID</th>
                 </tr>
             </thead>
@@ -475,6 +482,13 @@
                         <input type="text" name="judge_name[{{ $candidate->id }}]" required>
                     </td>
                     <td>
+                        <select name="category[{{ $candidate->id }}]" required>
+                            <option value="">Select Category</option>
+                            <option value="Swim Suit">Swim Suit</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </td>
+                    <td>
                         <input type="text" name="candidate_id_for_scoring[]" required>
                         <!-- Hidden input field to store the retrieved candidate ID -->
                         <input type="hidden" name="candidate_id[]" value="{{ $candidate->id }}">
@@ -488,19 +502,20 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>      
 </div>
+</div>
+</div>
 
-
-<!--Gown Form-->
 <div id="gown_table" class="category-table-gown" style="display: none;">
-    <form id="gown_form" action="{{ route('gown-score.store') }}" method="POST">
+    <form id="gown_form" action="{{ route('score.store') }}" method="POST">
         @csrf
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Candidate Number</th>
-                    <th>Suitability <br>(50%)</th>
+                    <th>Composure <br>(50%)</th>
                     <th>Poise, Grace and Projection <br>(50%)</th>
                     <th>Judge Name</th>
+                    <th>Category</th>
                     <th>Enter Candidate ID</th>
                 </tr>
             </thead>
@@ -510,13 +525,20 @@
                 <tr>
                     <td>{{ $candidate->candidateNumber }}</td>
                     <td>
-                        <input type="number" name="suitability[{{ $candidate->id }}]" min="0" max="50" required>
+                        <input type="number" name="composure[{{ $candidate->id }}]" min="0" max="50" required>
                     </td>
                     <td>
                         <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="0" max="50" required>
                     </td>
                     <td>
                         <input type="text" name="judge_name[{{ $candidate->id }}]" required>
+                    </td>
+                    <td>
+                        <select name="category[{{ $candidate->id }}]" required>
+                            <option value="">Select Category</option>
+                            <option value="Gown">Gown</option>
+                            <!-- Add more options as needed -->
+                        </select>
                     </td>
                     <td>
                         <input type="text" name="candidate_id_for_scoring[]" required>

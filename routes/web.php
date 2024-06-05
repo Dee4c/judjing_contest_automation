@@ -22,6 +22,11 @@ Route::get('/usermanage/preliminary_dash', [UserManagementController::class, 'pr
 Route::get('/judge/judgeDashboard', [UserManagementController::class, 'judgeDashboard'])->middleware('isLoggedIn')->name('judge.judge_dashboard');
 Route::post('/scores', [UserManagementController::class, 'storeScore'])->middleware('isLoggedIn')->name('score.store');
 Route::get('/pre-interview-scores', [UserManagementController::class, 'getPreInterviewScores']);
+Route::get('/judge/semifinalsDashboard', [UserManagementController::class, 'semifinalsDashboard'])->middleware('isLoggedIn')->name('judge.semi_finals_dash');
+Route::post('/gown-scores', [UserManagementController::class, 'storeGownScore'])->middleware('isLoggedIn')->name('gown-score.store');
+Route::post('/swimsuit-scores', [UserManagementController::class, 'storeSwimSuitScore'])->middleware('isLoggedIn')->name('swimsuit-score.store');
+
+
 
 
 
