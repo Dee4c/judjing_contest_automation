@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preliminary Table</title>
+    <title>Judge Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <style>
@@ -269,50 +269,69 @@
         }
     
         /* Updated table styles */
-        table {
+        /* table {
             width: 100%;
             table-layout: fixed;
             background-color: #11101D;
             color: #fff;
-        }
-    
+        } */
+
         .tbl-header {
             background-color: rgba(255, 255, 255, 0.3);
         }
-    
+
         .tbl-content {
             height: 300px;
             overflow-x: auto;
             margin-top: 0px;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
-    
+
         th {
-            padding: 20px 15px;
-            text-align: left;
+            padding: 15px; /* Adjusted padding for header */
+            text-align: center; /* Center align header text */
             font-weight: 500;
-            font-size: 12px;
-            color: black;
+            font-size: 14px; /* Increased font size */
+            color: #fff;
             text-transform: uppercase;
         }
-    
+
         td {
-            padding: 15px;
-            text-align: left;
+            padding: 15px; /* Adjusted padding for table cells */
+            text-align: center; /* Center align cell text */
             vertical-align: middle;
             font-weight: 300;
-            font-size: 12px;
+            font-size: 14px; /* Increased font size */
             color: #fff;
             border-bottom: solid 1px rgba(255, 255, 255, 0.1);
         }
-    
+
+        /* Adjusted table responsive styles */
+        .table-responsive {
+            width: 80%; 
+            margin:auto;
+            overflow-x: auto;
+            padding: 20px; 
+            margin-left: 300px;
+        }
+
         .title-id {
             color: white;
-            margin: auto;
         }
 
         .form-select {
             width: 200px; /* Adjust the width as needed */
+        }
+
+        .category-table-gown{
+            width: 1300px;
+            margin-left: 317px;
+        }
+
+        .category-table {
+            width: 1300px;
+            margin-left: 300px;
+            display: none; /* Hide all tables by default */
         }
     </style>
 </head>
@@ -323,39 +342,25 @@
     </div>
     <ul class="nav-list">
         <li>
-            <a href="{{route('usermanage.dashboard')}}">
+            <a href="{{ route('judge.judge_dashboard') }}">
                 <i class='bx bx-user'></i>
-                <span class="links_name">User Management</span>
+                <span class="links_name">PRELIMINARIES</span>
             </a>
-            <span class="tooltip">User Management</span>
+            <span class="tooltip">PRELIMINARIES</span>
         </li>
         <li>
-            <a href="{{route('usermanage.candidate_dash')}}">
+            <a href="{{route('judge.semi_finals_dash')}}">
                 <i class='bx bxs-user-check'></i>
-                <span class="links_name">Candidates</span>
+                <span class="links_name">SEMI-FINALS</span>
             </a>
-            <span class="tooltip">Candidate Management</span>
+            <span class="tooltip">SEMI-FINALS</span>
         </li>
         <li>
             <a href="#">
                 <i class='bx bx-edit'></i>
-                <span class="links_name">Preliminaries</span>
+                <span class="links_name">FINALS</span>
             </a>
-            <span class="tooltip">Preliminaries</span>
-        </li>
-        <li>
-            <a href="#">
-                <i class='bx bx-line-chart'></i>
-                <span class="links_name">Semi-Finals</span>
-            </a>
-            <span class="tooltip">Semi-Finals</span>
-        </li>
-        <li>
-            <a href="#">
-                <i class='bx bxs-crown'></i>
-                <span class="links_name">Finals</span>
-            </a>
-            <span class="tooltip">Finals</span>
+            <span class="tooltip">FINALS</span>
         </li>
         <li class="profile">
             <div class="profile-details">
@@ -370,38 +375,121 @@
         </li>
     </ul>
 </div>
+
 <div class="content">
     <div class="container">
-        <!-- Title -->
-        <h1 class="title-id">Overall Scores</h1>
-        <br>
-        <!-- Table to display candidate ranks -->
-        <div class="tbl-content">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Candidate Number</th>
-                        <th>Pre-Interview <br> Rank</th>
-                        <th>Swimsuit <br> Rank</th>
-                        <th>Gown <br> Rank</th>
-                        <th>Total Score</th>
-                        <th>Overall Rank</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($candidates as $candidate)
-                    <tr>
-                        <td>{{ $candidate->id }}</td>
-                        <td>{{ $candidate->preInterviewAverageScore() }}</td>
-                        <td>{{ $candidate->swimSuitAverageScore() }}</td>
-                        <td>{{ $candidate->gownAverageScore() }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>                
-            </table>
+        <h1 class="title-id">PRELIMINARY TABLE</h1>
+        <div class="dropdown">
+            <select class="form-select" id="categorySelect">
+                <option value="">Select Category</option>
+                <option value="swim_suit">Swimsuit</option>
+                <option value="gown">Gown</option>
+            </select>            
         </div>
-    </div>
+        <br>
+
+    <!-- Swim Suit Form -->
+<div id="swim_suit_table" class="category-table-swim-suit" style="display: none;">
+    <form id="swim_suit_form" action="{{ route('swim-suit-scores.store') }}" method="POST">
+        @csrf
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Candidate Number</th>
+                    <th>Composure (Score: 0-50)</th>
+                    <th>Poise, Grace, and Projection (Score: 0-50)</th>
+                    <th>Judge Name</th>
+                    <th>Total Score</th>
+                    <th>Rank</th>
+                </tr>
+            </thead>
+            <tbody id="swim_suit_table_body">
+                <!-- Table content for swim suit category will be dynamically populated here -->
+                @foreach($candidates as $candidate)
+                <tr>
+                    <td>{{ $candidate->candidateNumber }}</td>
+                    <td>
+                        <input type="number" name="composure[{{ $candidate->id }}]" min="75" max="100" required onchange="calculateSwimSuitTotalScore({{ $candidate->id }})">
+                    </td>
+                    <td>
+                        <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="75" max="100" required onchange="calculateSwimSuitTotalScore({{ $candidate->id }})">
+                    </td>
+                    <td>
+                        <input type="text" name="judge_name[]" required>
+                    </td>
+                    <td id="totalScore_swim_suit_{{ $candidate->id }}"></td>
+                    <td>
+                        <input type="text" name="rank[]" id="rank_swim_suit_{{ $candidate->id }}" readonly>
+                    </td>
+                    <input type="hidden" name="candidate_number[]" value="{{ $candidate->candidateNumber }}">
+                    <input type="hidden" name="candidate_rank[]" id="candidate_rank_swim_suit_{{ $candidate->id }}">
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 </div>
+
+<script>
+    // Function to calculate the total score and rank for swim suit category
+    function calculateSwimSuitTotalScore(candidateId) {
+        var composureScore = parseInt(document.querySelector('input[name="composure[' + candidateId + ']"]').value) || 0;
+        var poiseGraceProjectionScore = parseInt(document.querySelector('input[name="poise_grace_projection[' + candidateId + ']"]').value) || 0;
+        var totalScore = composureScore + poiseGraceProjectionScore;
+        document.getElementById("totalScore_swim_suit_" + candidateId).textContent = totalScore;
+        updateSwimSuitRank(); // Update the rank after calculating the total score
+    }
+
+    // Function to update the rank for swim suit category
+    function updateSwimSuitRank() {
+        var totalScores = [];
+        document.querySelectorAll('td[id^="totalScore_swim_suit_"]').forEach(function(scoreElement) {
+            var score = parseInt(scoreElement.textContent);
+            totalScores.push(score);
+        });
+        totalScores.sort(function(a, b) {
+            return b - a;
+        });
+        var rank = 1;
+        var prevScore = null;
+        totalScores.forEach(function(score) {
+            if (score !== prevScore) {
+                document.querySelectorAll('td[id^="totalScore_swim_suit_"]').forEach(function(scoreElement) {
+                    if (parseInt(scoreElement.textContent) === score) {
+                        var candidateId = scoreElement.id.split("_")[3]; // Updated to get the correct candidate ID
+                        var rankInput = document.getElementById("rank_swim_suit_" + candidateId);
+                        var candidateRankInput = document.getElementById("candidate_rank_swim_suit_" + candidateId);
+                        rankInput.value = rank;
+                        candidateRankInput.value = rank;
+                    }
+                });
+            }
+            prevScore = score;
+            rank++;
+        });
+    }
+
+    // Event listener for category selection change
+    document.getElementById('categorySelect').addEventListener('change', function() {
+        var selectedCategory = this.value;
+        document.querySelectorAll('.category-table').forEach(function(table) {
+            table.style.display = 'none';
+        });
+        if (selectedCategory === 'swim_suit') {
+            document.getElementById(selectedCategory + '_table').style.display = 'block';
+        }
+    });
+
+    // Call calculateSwimSuitTotalScore for initial calculation in swim suit category
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('input[name^="composure["], input[name^="poise_grace_projection["]').forEach(function(input) {
+            var candidateId = input.name.match(/\d+/)[0];
+            calculateSwimSuitTotalScore(candidateId);
+        });
+    });
+</script>
+ 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>

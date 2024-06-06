@@ -7,9 +7,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use App\Models\Candidate;
-use App\Models\Score;
-use App\Models\GownScore;
 use App\Models\SwimSuitScore;
+use App\Models\PreInterviewScore;
+
 
 
 class UserManagementController extends Controller
@@ -194,14 +194,12 @@ class UserManagementController extends Controller
 
     public function preliminaryDash()
     {
-        // Fetch all candidates with their associated scores
-        $candidates = Candidate::with('scores')->get();
+        // Fetch all candidates
+        $candidates = Candidate::all();
         
         // Pass candidate data to the view
-        return view('usermanage.preliminary_dash', ['candidates' => $candidates]);
+        return view('usermanage.preliminary_dash', compact('candidates'));
     }
-
-    
 
     public function judgeDashboard()
     {
@@ -212,112 +210,6 @@ class UserManagementController extends Controller
         return view('judge.judge_dashboard', ['candidates' => $candidates]);
     }
 
-    
-    public function storeScore(Request $request)
-    {
-        $request->validate([
-            'candidate_number' => 'required|array',
-            'composure' => 'required|array',
-            'poise_grace_projection' => 'required|array',
-            'judge_name' => 'required|array',
-            'composure.*' => 'required|integer|min:0|max:50',
-            'poise_grace_projection.*' => 'required|integer|min:0|max:50',
-            'judge_name.*' => 'required|string|max:255',
-        ]);
-    
-        $candidateNumbers = $request->input('candidate_number');
-        $composures = $request->input('composure');
-        $poiseGraceProjections = $request->input('poise_grace_projection');
-        $judgeNames = $request->input('judge_name');
-    
-        $scores = [];
-    
-        foreach ($candidateNumbers as $key => $candidateNumber) {
-            $scores[] = [
-                'candidate_number' => $candidateNumber,
-                'composure' => $composures[$key],
-                'poise_grace_projection' => $poiseGraceProjections[$key],
-                'judge_name' => $judgeNames[$key],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
-    
-        Score::insert($scores);
-    
-        return redirect()->back()->with('success', 'Scores added successfully');
-    }
-
-    public function storeSwimSuitScore(Request $request)
-    {
-        $request->validate([
-            'candidate_number' => 'required|array',
-            'composure' => 'required|array',
-            'poise_grace_projection' => 'required|array',
-            'judge_name' => 'required|array',
-            'composure.*' => 'required|integer|min:0|max:50',
-            'poise_grace_projection.*' => 'required|integer|min:0|max:50',
-            'judge_name.*' => 'required|string|max:255',
-        ]);
-    
-        $candidateNumbers = $request->input('candidate_number');
-        $composures = $request->input('composure');
-        $poiseGraceProjections = $request->input('poise_grace_projection');
-        $judgeNames = $request->input('judge_name');
-    
-        $scores = [];
-    
-        foreach ($candidateNumbers as $key => $candidateNumber) {
-            $scores[] = [
-                'candidate_number' => $candidateNumber,
-                'composure' => $composures[$key],
-                'poise_grace_projection' => $poiseGraceProjections[$key],
-                'judge_name' => $judgeNames[$key],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
-    
-        SwimSuitScore::insert($scores);
-    
-        return redirect()->back()->with('success', 'Scores added successfully');
-    }
-    
-
-        public function storeGownScore(Request $request)
-    {
-        $request->validate([
-            'candidate_number' => 'required|array',
-            'suitability' => 'required|array',
-            'poise_grace_projection' => 'required|array',
-            'judge_name' => 'required|array',
-            'suitability.*' => 'required|integer|min:0|max:50',
-            'poise_grace_projection.*' => 'required|integer|min:0|max:50',
-            'judge_name.*' => 'required|string|max:255',
-        ]);
-
-        $candidateNumbers = $request->input('candidate_number');
-        $suitabilities = $request->input('suitability');
-        $poiseGraceProjections = $request->input('poise_grace_projection');
-        $judgeNames = $request->input('judge_name');
-
-        $gownScores = [];
-
-        foreach ($candidateNumbers as $key => $candidateNumber) {
-            $gownScores[] = [
-                'candidate_number' => $candidateNumber,
-                'suitability' => $suitabilities[$key],
-                'poise_grace_projection' => $poiseGraceProjections[$key],
-                'judge_name' => $judgeNames[$key],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
-
-        GownScore::insert($gownScores);
-
-        return redirect()->back()->with('success', 'Gown scores added successfully');
-    }
         public function semifinalsDashboard()
     {
         $candidates = Candidate::all();
@@ -326,6 +218,109 @@ class UserManagementController extends Controller
         return view('judge.semi_finals_dash', ['candidates' => $candidates]);
     }
 
-} 
+    public function storePreInterviewScore(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'candidate_number' => 'required|array',
+            'candidate_number.*' => 'required|integer',
+            'judge_name' => 'required|array',
+            'judge_name.*' => 'required|string|max:255',
+        ]);
+    
+        // Array to hold total scores for each candidate
+        $totalScores = [];
+    
+        // Loop through the submitted data and calculate total scores
+        foreach ($validatedData['candidate_number'] as $index => $candidateNumber) {
+            $composure = $request->input('composure.' . $candidateNumber, 0);
+            $poiseGraceProjection = $request->input('poise_grace_projection.' . $candidateNumber, 0);
+            // Calculate the total score by averaging the two scores and dividing by 2
+            $totalScores[$candidateNumber] = ($composure + $poiseGraceProjection) / 2;
+        }
+    
+        // Sort the total scores in descending order
+        arsort($totalScores);
+    
+        // Calculate ranks based on the sorted total scores
+        $rank = 0; // Start rank from 0
+        $prevScore = null;
+        foreach ($totalScores as $candidateNumber => $totalScore) {
+            if ($totalScore !== $prevScore) {
+                $rank++;
+            }
+            // Store the pre-interview score in the database
+            PreInterviewScore::create([
+                'candidate_number' => $candidateNumber,
+                'composure' => $request->input('composure.' . $candidateNumber, 0),
+                'poise_grace_projection' => $request->input('poise_grace_projection.' . $candidateNumber, 0),
+                'total' => $totalScore,
+                'rank' => $rank,
+                'judge_name' => $validatedData['judge_name'][$index], // Using $index directly
+            ]);
+            $prevScore = $totalScore;
+        }
+    
+        // Redirect to the swim-suit-table page
+        return redirect()->route('swim-suit-table')->with('success', 'Pre-interview scores submitted successfully!');
+    }
+    
+    public function storeSwimSuitScore(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'candidate_number' => 'required|array',
+            'candidate_number.*' => 'required|integer',
+            'judge_name' => 'required|array',
+            'judge_name.*' => 'required|string|max:255',
+        ]);
+    
+        // Array to hold total scores for each candidate
+        $totalScores = [];
+    
+        // Loop through the submitted data and calculate total scores
+        foreach ($validatedData['candidate_number'] as $index => $candidateNumber) {
+            $composure = $request->input('composure.' . $candidateNumber, 0);
+            $poiseGraceProjection = $request->input('poise_grace_projection.' . $candidateNumber, 0);
+            // Calculate the total score by adding the two scores and dividing by 2
+            $totalScores[$candidateNumber] = ($composure + $poiseGraceProjection) / 2;
+        }
+    
+        // Sort the total scores in descending order
+        arsort($totalScores);
+    
+        // Calculate ranks based on the sorted total scores
+        $rank = 0; // Start rank from 0
+        $prevScore = null;
+        foreach ($totalScores as $candidateNumber => $totalScore) {
+            if ($totalScore !== $prevScore) {
+                $rank++;
+            }
+            // Store the swimsuit score in the database
+            SwimSuitScore::create([
+                'candidate_number' => $candidateNumber,
+                'composure' => $request->input('composure.' . $candidateNumber, 0),
+                'poise_grace_projection' => $request->input('poise_grace_projection.' . $candidateNumber, 0),
+                'total' => $totalScore,
+                'rank' => $rank,
+                'judge_name' => $validatedData['judge_name'][$index], // Using $index directly
+            ]);
+            $prevScore = $totalScore;
+        }
+    
+        // Redirect back or do any other response handling as needed
+        return redirect()->back()->with('success', 'Swimsuit scores submitted successfully!');
+    }
+    
+
+    public function swimSuitTable()
+    {
+        $candidates = Candidate::all();
+        
+        // Pass candidate data to the view
+        return view('judge.swim_suit_table', ['candidates' => $candidates]);
+    }
+    
+}
 
 

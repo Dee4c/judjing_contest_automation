@@ -313,7 +313,6 @@
             overflow-x: auto;
             padding: 20px; 
             margin-left: 300px;
-            display: none; 
         }
 
         .title-id {
@@ -324,15 +323,6 @@
             width: 200px; /* Adjust the width as needed */
         }
 
-        .category-table-pre-interview {
-            width: 1300px;
-        }
-
-        .category-table-swim-suit {
-            width: 1300px;
-            margin-left: 317px;
-        }
-
         .category-table-gown{
             width: 1300px;
             margin-left: 317px;
@@ -341,7 +331,7 @@
         .category-table {
             width: 1300px;
             margin-left: 300px;
-            display: none; /* Hide all tables by default */
+            /* display: none;  */
         }
     </style>
 </head>
@@ -390,28 +380,28 @@
     <div class="container">
         <h1 class="title-id">PRELIMINARY TABLE</h1>
         <div class="dropdown">
-            <h2 class="title-id">Category</h2>
             <select class="form-select" id="categorySelect">
                 <option value="">Select Category</option>
                 <option value="pre_interview">Pre-Interview</option>
                 <option value="swim_suit">Swimsuit</option>
                 <option value="gown">Gown</option>
-            </select>            
-        </div>
+            </select>
+        </div>        
         <br>
 
-        <!--Pre-Interview Form-->
+        <!-- Pre-Interview Form -->
         <div id="pre_interview_table" class="category-table-pre-interview" style="display: none;">
-            <form id="pre_interview_form" action="{{ route('score.store') }}" method="POST">
+            <form id="pre_interview_form" action="{{ route('pre-interview-scores.store') }}" method="POST">
                 @csrf
                 <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Candidate Number</th>
-                            <th>Composure <br>(50%)</th>
-                            <th>Poise, Grace and Projection <br>(50%)</th>
+                            <th>Composure (Score: 75-100)</th>
+                            <th>Poise, Grace and Projection (Score: 75-100)</th>
                             <th>Judge Name</th>
-                            <th>Enter Candidate ID</th>
+                            <th>Total Score</th>
+                            <th>Rank</th>
                         </tr>
                     </thead>
                     <tbody id="pre_interview_table_body">
@@ -420,170 +410,103 @@
                         <tr>
                             <td>{{ $candidate->candidateNumber }}</td>
                             <td>
-                                <input type="number" name="composure[{{ $candidate->id }}]" min="0" max="50" required>
+                                <!-- Input field for composure score -->
+                                <input type="number" name="composure[{{ $candidate->id }}]" min="75" max="100" required onchange="calculateTotalScore({{ $candidate->id }})">
                             </td>
                             <td>
-                                <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="0" max="50" required>
+                                <!-- Input field for poise_grace_projection score -->
+                                <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="75" max="100" required onchange="calculateTotalScore({{ $candidate->id }})">
                             </td>
                             <td>
-                                <input type="text" name="judge_name[{{ $candidate->id }}]" required>
+                                <!-- Input field for the judge's name -->
+                                <input type="text" name="judge_name[]" required>
                             </td>
+                            <!-- These are for displaying the total score and rank -->
+                            <td id="totalScore_{{ $candidate->id }}"></td>
                             <td>
-                                <input type="text" name="candidate_id_for_scoring[]" required>
-                                <!-- Hidden input field to store the retrieved candidate ID -->
-                                <input type="hidden" name="candidate_id[]" value="{{ $candidate->id }}">
-                                <!-- Include the candidate number field here -->
-                                <input type="hidden" name="candidate_number[{{ $candidate->id }}]" value="{{ $candidate->candidateNumber }}">
+                                <!-- Display the rank -->
+                                <input type="text" name="rank[]" id="rank_{{ $candidate->id }}" readonly>
                             </td>
+                            <!-- Hidden input field to store the candidate ID -->
+                            <input type="hidden" name="candidate_number[]" value="{{ $candidate->candidateNumber }}">
+                            <!-- Hidden input field to store the candidate's rank -->
+                            <input type="hidden" name="candidate_rank[]" id="candidate_rank_{{ $candidate->id }}">
                         </tr>
                         @endforeach
-                    </tbody>                    
+                    </tbody>
                 </table>
+                <!-- Submit button -->
                 <button type="submit" class="btn btn-primary">Submit</button>
-            </form>      
+            </form>
         </div>
-    </div>
-</div>
-
-
-<!--Swim Suit Form-->
-<div id="swim_suit_table" class="category-table-swim-suit" style="display: none;">
-    <form id="swim_suit_form" action="{{ route('swimsuit-score.store') }}" method="POST">
-        @csrf
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Candidate Number</th>
-                    <th>Composure <br>(50%)</th>
-                    <th>Poise, Grace and Projection <br>(50%)</th>
-                    <th>Judge Name</th>
-                    <th>Enter Candidate ID</th>
-                </tr>
-            </thead>
-            <tbody id="swim_suit_table_body">
-                <!-- Table content for swim_suit category will be dynamically populated here -->
-                @foreach($candidates as $candidate)
-                <tr>
-                    <td>{{ $candidate->candidateNumber }}</td>
-                    <td>
-                        <input type="number" name="composure[{{ $candidate->id }}]" min="0" max="50" required>
-                    </td>
-                    <td>
-                        <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="0" max="50" required>
-                    </td>
-                    <td>
-                        <input type="text" name="judge_name[{{ $candidate->id }}]" required>
-                    </td>
-                    <td>
-                        <input type="text" name="candidate_id_for_scoring[]" required>
-                        <!-- Hidden input field to store the retrieved candidate ID -->
-                        <input type="hidden" name="candidate_id[]" value="{{ $candidate->id }}">
-                        <!-- Include the candidate number field here -->
-                        <input type="hidden" name="candidate_number[{{ $candidate->id }}]" value="{{ $candidate->candidateNumber }}">
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>                    
-        </table>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>      
-</div>
-
-
-<!--Gown Form-->
-<div id="gown_table" class="category-table-gown" style="display: none;">
-    <form id="gown_form" action="{{ route('gown-score.store') }}" method="POST">
-        @csrf
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Candidate Number</th>
-                    <th>Suitability <br>(50%)</th>
-                    <th>Poise, Grace and Projection <br>(50%)</th>
-                    <th>Judge Name</th>
-                    <th>Enter Candidate ID</th>
-                </tr>
-            </thead>
-            <tbody id="gown_table_body">
-                <!-- Table content for gown category will be dynamically populated here -->
-                @foreach($candidates as $candidate)
-                <tr>
-                    <td>{{ $candidate->candidateNumber }}</td>
-                    <td>
-                        <input type="number" name="suitability[{{ $candidate->id }}]" min="0" max="50" required>
-                    </td>
-                    <td>
-                        <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="0" max="50" required>
-                    </td>
-                    <td>
-                        <input type="text" name="judge_name[{{ $candidate->id }}]" required>
-                    </td>
-                    <td>
-                        <input type="text" name="candidate_id_for_scoring[]" required>
-                        <!-- Hidden input field to store the retrieved candidate ID -->
-                        <input type="hidden" name="candidate_id[]" value="{{ $candidate->id }}">
-                        <!-- Include the candidate number field here -->
-                        <input type="hidden" name="candidate_number[{{ $candidate->id }}]" value="{{ $candidate->candidateNumber }}">
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>                    
-        </table>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>      
-</div>
-
-
-<script>
-    // Flag to keep track of form submission status
-    var formSubmitted = false;
-
-    // Function to disable the select button after submission
-    function disableSelectButton() {
-        // Get the select button
-        var selectButton = document.getElementById('categorySelect');
-        // Disable the select button
-        selectButton.disabled = true;
-    }
-
-    // Event listener for form submission
-    document.querySelectorAll('form').forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-            // Prevent the default form submission behavior
-            event.preventDefault();
-            // Set the form submission flag to true
-            formSubmitted = true;
-            // Call the function to disable the select button
-            disableSelectButton();
-            // Submit the form
-            this.submit();
-        });
-    });
-
-    document.getElementById('categorySelect').addEventListener('change', function() {
-        // Check if the form has been submitted
-        if (formSubmitted) {
-            // If the form has been submitted, disable the select button
-            this.disabled = true;
-        } else {
-            var selectedCategory = this.value;
-            // Hide all category tables
-            document.querySelectorAll('.category-table').forEach(function(table) {
-                table.style.display = 'none';
-            });
-            // Show the selected category table
-            if (selectedCategory === 'pre_interview') {
-                document.getElementById('pre_interview_table').style.display = 'block';
-            } else if (selectedCategory === 'swim_suit') {
-                document.getElementById('swim_suit_table').style.display = 'block';
-            } else if (selectedCategory === 'gown') {
-                document.getElementById('gown_table').style.display = 'block';
+        
+        <script>
+            // Function to calculate the total score and rank for pre-interview category
+            function calculateTotalScore(candidateId) {
+                var composureScore = parseInt(document.querySelector('input[name="composure[' + candidateId + ']"]').value) || 0;
+                var poiseGraceProjectionScore = parseInt(document.querySelector('input[name="poise_grace_projection[' + candidateId + ']"]').value) || 0;
+                var totalScore = (composureScore + poiseGraceProjectionScore) / 2; // Calculate the average
+                document.getElementById("totalScore_" + candidateId).textContent = totalScore.toFixed(2); // Display total score
+                updateRank();
             }
-        }
-    });
-</script>
-
-
+        
+            // Function to update the rank for pre-interview category
+            function updateRank() {
+                var totalScores = [];
+                document.querySelectorAll('td[id^="totalScore_"]').forEach(function(scoreElement) {
+                    var score = parseFloat(scoreElement.textContent);
+                    totalScores.push(score);
+                });
+                totalScores.sort(function(a, b) {
+                    return b - a;
+                });
+                var rank = 1;
+                var prevScore = null;
+                totalScores.forEach(function(score) {
+                    if (score !== prevScore) {
+                        document.querySelectorAll('td[id^="totalScore_"]').forEach(function(scoreElement) {
+                            if (parseFloat(scoreElement.textContent) === score) {
+                                var candidateId = scoreElement.id.split("_")[1];
+                                var rankInput = document.getElementById("rank_" + candidateId);
+                                var candidateRankInput = document.getElementById("candidate_rank_" + candidateId);
+                                rankInput.value = rank;
+                                candidateRankInput.value = rank;
+                            }
+                        });
+                    }
+                    prevScore = score;
+                    rank++;
+                });
+            }
+        
+            // Event listener for category selection change
+            document.getElementById('categorySelect').addEventListener('change', function() {
+                var selectedCategory = this.value;
+                document.querySelectorAll('.category-table').forEach(function(table) {
+                    table.style.display = 'none';
+                });
+                if (selectedCategory !== '') {
+                    document.getElementById(selectedCategory + '_table').style.display = 'block';
+                    if (selectedCategory === 'pre_interview') {
+                        // Call calculateTotalScore for initial calculation in pre-interview category
+                        document.querySelectorAll('input[name^="composure"], input[name^="poise_grace_projection"]').forEach(function(input) {
+                            var candidateId = input.name.match(/\d+/)[0];
+                            calculateTotalScore(candidateId);
+                        });
+                    }
+                }
+            });
+        
+            // Call calculateTotalScore for initial calculation in pre-interview category
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('input[name^="composure"], input[name^="poise_grace_projection"]').forEach(function(input) {
+                    var candidateId = input.name.match(/\d+/)[0];
+                    calculateTotalScore(candidateId);
+                });
+            });
+        </script>
+        
+      
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>

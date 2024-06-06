@@ -20,11 +20,15 @@ Route::delete('/candidates/{id}', [UserManagementController::class, 'deleteCandi
 Route::put('/candidates/{id}', [UserManagementController::class, 'updateCandidate'])->middleware('isLoggedIn')->name('candidate.update');
 Route::get('/usermanage/preliminary_dash', [UserManagementController::class, 'preliminaryDash'])->name('usermanage.preliminary_dash');
 Route::get('/judge/judgeDashboard', [UserManagementController::class, 'judgeDashboard'])->middleware('isLoggedIn')->name('judge.judge_dashboard');
-Route::post('/scores', [UserManagementController::class, 'storeScore'])->middleware('isLoggedIn')->name('score.store');
 Route::get('/pre-interview-scores', [UserManagementController::class, 'getPreInterviewScores']);
 Route::get('/judge/semifinalsDashboard', [UserManagementController::class, 'semifinalsDashboard'])->middleware('isLoggedIn')->name('judge.semi_finals_dash');
-Route::post('/gown-scores', [UserManagementController::class, 'storeGownScore'])->middleware('isLoggedIn')->name('gown-score.store');
-Route::post('/swimsuit-scores', [UserManagementController::class, 'storeSwimSuitScore'])->middleware('isLoggedIn')->name('swimsuit-score.store');
+Route::post('/pre-interview-scores', [UserManagementController::class, 'storePreInterviewScore'])->middleware('isLoggedIn')->name('pre-interview-scores.store');
+Route::post('/swim-suit-scores', [UserManagementController::class,'storeSwimSuitScore'])->middleware('isLoggedIn')->name('swim-suit-scores.store');
+Route::get('/swim-suit-table', [UserManagementController::class, 'swimSuitTable'])->middleware('isLoggedIn')->name('swim-suit-table');
+
+
+
+
 
 
 

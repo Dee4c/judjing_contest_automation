@@ -8,11 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class SwimSuitScore extends Model
 {
     use HasFactory;
-    
     protected $fillable = [
-        'candidate_number',
-        'composure',
-        'poise_grace_projection',
-        'judge_name',
-    ];  
+        'candidate_number', 'total', 'rank', 'judge_name',
+    ];
 }
