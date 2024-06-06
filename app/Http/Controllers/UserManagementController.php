@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Candidate;
 use App\Models\SwimSuitScore;
 use App\Models\PreInterviewScore;
+use App\Models\GownScore;
 
 
 
@@ -265,7 +266,7 @@ class UserManagementController extends Controller
         return redirect()->route('swim-suit-table')->with('success', 'Pre-interview scores submitted successfully!');
     }
     
-    public function storeSwimSuitScore(Request $request)
+        public function storeSwimSuitScore(Request $request)
     {
         // Validate the incoming request data
         $validatedData = $request->validate([
@@ -274,10 +275,10 @@ class UserManagementController extends Controller
             'judge_name' => 'required|array',
             'judge_name.*' => 'required|string|max:255',
         ]);
-    
+
         // Array to hold total scores for each candidate
         $totalScores = [];
-    
+
         // Loop through the submitted data and calculate total scores
         foreach ($validatedData['candidate_number'] as $index => $candidateNumber) {
             $composure = $request->input('composure.' . $candidateNumber, 0);
@@ -285,10 +286,10 @@ class UserManagementController extends Controller
             // Calculate the total score by adding the two scores and dividing by 2
             $totalScores[$candidateNumber] = ($composure + $poiseGraceProjection) / 2;
         }
-    
+
         // Sort the total scores in descending order
         arsort($totalScores);
-    
+
         // Calculate ranks based on the sorted total scores
         $rank = 0; // Start rank from 0
         $prevScore = null;
@@ -307,13 +308,60 @@ class UserManagementController extends Controller
             ]);
             $prevScore = $totalScore;
         }
-    
-        // Redirect back or do any other response handling as needed
-        return redirect()->back()->with('success', 'Swimsuit scores submitted successfully!');
-    }
-    
 
-    public function swimSuitTable()
+        // Redirect to gown_table.blade.php
+        return redirect()->route('gown-table')->with('success', 'Gown scores submitted successfully!');
+
+    }
+
+        public function storeGownScore(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'candidate_number' => 'required|array',
+            'candidate_number.*' => 'required|integer',
+            'judge_name' => 'required|array',
+            'judge_name.*' => 'required|string|max:255',
+        ]);
+
+        // Array to hold total scores for each candidate
+        $totalScores = [];
+
+        // Loop through the submitted data and calculate total scores
+        foreach ($validatedData['candidate_number'] as $index => $candidateNumber) {
+            $suitability = $request->input('suitability.' . $candidateNumber, 0);
+            $poiseGraceProjection = $request->input('poise_grace_projection.' . $candidateNumber, 0);
+            // Calculate the total score by adding the two scores and dividing by 2
+            $totalScores[$candidateNumber] = ($suitability + $poiseGraceProjection) / 2;
+        }
+
+        // Sort the total scores in descending order
+        arsort($totalScores);
+
+        // Calculate ranks based on the sorted total scores
+        $rank = 0; // Start rank from 0
+        $prevScore = null;
+        foreach ($totalScores as $candidateNumber => $totalScore) {
+            if ($totalScore !== $prevScore) {
+                $rank++;
+            }
+            // Store the gown score in the database
+            GownScore::create([
+                'candidate_number' => $candidateNumber,
+                'suitability' => $request->input('suitability.' . $candidateNumber, 0),
+                'poise_grace_projection' => $request->input('poise_grace_projection.' . $candidateNumber, 0),
+                'total' => $totalScore,
+                'rank' => $rank,
+                'judge_name' => $validatedData['judge_name'][$index], // Using $index directly
+            ]);
+            $prevScore = $totalScore;
+        }
+
+        // Redirect back or do any other response handling as needed
+        return redirect()->back()->with('success', 'Gown scores submitted successfully!');
+    }
+
+        public function swimSuitTable()
     {
         $candidates = Candidate::all();
         
@@ -321,6 +369,11 @@ class UserManagementController extends Controller
         return view('judge.swim_suit_table', ['candidates' => $candidates]);
     }
     
+        public function gownTable()
+        {
+            $candidates = Candidate::all();
+            
+            // Pass candidate data to the view
+            return view('judge.gown_table', ['candidates' => $candidates]);
+        }
 }
-
-

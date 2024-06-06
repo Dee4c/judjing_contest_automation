@@ -383,7 +383,6 @@
             <select class="form-select" id="categorySelect">
                 <option value="">Select Category</option>
                 <option value="swim_suit">Swimsuit</option>
-                <option value="gown">Gown</option>
             </select>            
         </div>
         <br>
@@ -396,8 +395,8 @@
             <thead>
                 <tr>
                     <th>Candidate Number</th>
-                    <th>Composure (Score: 0-50)</th>
-                    <th>Poise, Grace, and Projection (Score: 0-50)</th>
+                    <th>Composure (Score: 75-100)</th>
+                    <th>Poise, Grace, and Projection (Score: 75-100)</th>
                     <th>Judge Name</th>
                     <th>Total Score</th>
                     <th>Rank</th>

@@ -24,7 +24,12 @@ Route::get('/pre-interview-scores', [UserManagementController::class, 'getPreInt
 Route::get('/judge/semifinalsDashboard', [UserManagementController::class, 'semifinalsDashboard'])->middleware('isLoggedIn')->name('judge.semi_finals_dash');
 Route::post('/pre-interview-scores', [UserManagementController::class, 'storePreInterviewScore'])->middleware('isLoggedIn')->name('pre-interview-scores.store');
 Route::post('/swim-suit-scores', [UserManagementController::class,'storeSwimSuitScore'])->middleware('isLoggedIn')->name('swim-suit-scores.store');
+Route::post('gown-scores', [UserManagementController::class, 'storeGownScore'])->middleware('isLoggedIn')->name('gown-scores.store');
 Route::get('/swim-suit-table', [UserManagementController::class, 'swimSuitTable'])->middleware('isLoggedIn')->name('swim-suit-table');
+Route::get('/gown-table', [UserManagementController::class, 'gownTable'])->middleware('isLoggedIn')->name('gown-table');
+
+
+
 
 
 

@@ -18,10 +18,10 @@ class Candidate extends Model
     ];
 
     // Define the relationship with the Score model
-    public function scores()
-    {
-        return $this->hasMany(Score::class, 'candidate_number', 'candidateNumber');
-    }
+    // public function scores()
+    // {
+    //     return $this->hasMany(Score::class, 'candidate_number', 'candidateNumber');
+    // }
 
     // Define the relationship with the SwimSuitScore model
     public function swimSuitScores()

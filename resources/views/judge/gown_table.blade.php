@@ -323,15 +323,10 @@
             width: 200px; /* Adjust the width as needed */
         }
 
-        .category-table-gown{
-            width: 1300px;
-            margin-left: 317px;
-        }
-
         .category-table {
             width: 1300px;
             margin-left: 300px;
-            /* display: none;  */
+            display: none; /* Hide all tables by default */
         }
     </style>
 </head>
@@ -382,129 +377,113 @@
         <div class="dropdown">
             <select class="form-select" id="categorySelect">
                 <option value="">Select Category</option>
-                <option value="pre_interview">Pre-Interview</option>
-            </select>
-        </div>        
+                <option value="gown">Gown</option>
+            </select>            
+        </div>
         <br>
 
-        <!-- Pre-Interview Form -->
-        <div id="pre_interview_table" class="category-table-pre-interview" style="display: none;">
-            <form id="pre_interview_form" action="{{ route('pre-interview-scores.store') }}" method="POST">
-                @csrf
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Candidate Number</th>
-                            <th>Composure (Score: 75-100)</th>
-                            <th>Poise, Grace and Projection (Score: 75-100)</th>
-                            <th>Judge Name</th>
-                            <th>Total Score</th>
-                            <th>Rank</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pre_interview_table_body">
-                        <!-- Table content for pre-interview category will be dynamically populated here -->
-                        @foreach($candidates as $candidate)
-                        <tr>
-                            <td>{{ $candidate->candidateNumber }}</td>
-                            <td>
-                                <!-- Input field for composure score -->
-                                <input type="number" name="composure[{{ $candidate->id }}]" min="75" max="100" required onchange="calculateTotalScore({{ $candidate->id }})">
-                            </td>
-                            <td>
-                                <!-- Input field for poise_grace_projection score -->
-                                <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="75" max="100" required onchange="calculateTotalScore({{ $candidate->id }})">
-                            </td>
-                            <td>
-                                <!-- Input field for the judge's name -->
-                                <input type="text" name="judge_name[]" required>
-                            </td>
-                            <!-- These are for displaying the total score and rank -->
-                            <td id="totalScore_{{ $candidate->id }}"></td>
-                            <td>
-                                <!-- Display the rank -->
-                                <input type="text" name="rank[]" id="rank_{{ $candidate->id }}" readonly>
-                            </td>
-                            <!-- Hidden input field to store the candidate ID -->
-                            <input type="hidden" name="candidate_number[]" value="{{ $candidate->candidateNumber }}">
-                            <!-- Hidden input field to store the candidate's rank -->
-                            <input type="hidden" name="candidate_rank[]" id="candidate_rank_{{ $candidate->id }}">
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <!-- Submit button -->
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>
-        
-        <script>
-            // Function to calculate the total score and rank for pre-interview category
-            function calculateTotalScore(candidateId) {
-                var composureScore = parseInt(document.querySelector('input[name="composure[' + candidateId + ']"]').value) || 0;
-                var poiseGraceProjectionScore = parseInt(document.querySelector('input[name="poise_grace_projection[' + candidateId + ']"]').value) || 0;
-                var totalScore = (composureScore + poiseGraceProjectionScore) / 2; // Calculate the average
-                document.getElementById("totalScore_" + candidateId).textContent = totalScore.toFixed(2); // Display total score
-                updateRank();
-            }
-        
-            // Function to update the rank for pre-interview category
-            function updateRank() {
-                var totalScores = [];
-                document.querySelectorAll('td[id^="totalScore_"]').forEach(function(scoreElement) {
-                    var score = parseFloat(scoreElement.textContent);
-                    totalScores.push(score);
-                });
-                totalScores.sort(function(a, b) {
-                    return b - a;
-                });
-                var rank = 1;
-                var prevScore = null;
-                totalScores.forEach(function(score) {
-                    if (score !== prevScore) {
-                        document.querySelectorAll('td[id^="totalScore_"]').forEach(function(scoreElement) {
-                            if (parseFloat(scoreElement.textContent) === score) {
-                                var candidateId = scoreElement.id.split("_")[1];
-                                var rankInput = document.getElementById("rank_" + candidateId);
-                                var candidateRankInput = document.getElementById("candidate_rank_" + candidateId);
-                                rankInput.value = rank;
-                                candidateRankInput.value = rank;
-                            }
-                        });
-                    }
-                    prevScore = score;
-                    rank++;
-                });
-            }
-        
-            // Event listener for category selection change
-            document.getElementById('categorySelect').addEventListener('change', function() {
-                var selectedCategory = this.value;
-                document.querySelectorAll('.category-table').forEach(function(table) {
-                    table.style.display = 'none';
-                });
-                if (selectedCategory !== '') {
-                    document.getElementById(selectedCategory + '_table').style.display = 'block';
-                    if (selectedCategory === 'pre_interview') {
-                        // Call calculateTotalScore for initial calculation in pre-interview category
-                        document.querySelectorAll('input[name^="composure"], input[name^="poise_grace_projection"]').forEach(function(input) {
-                            var candidateId = input.name.match(/\d+/)[0];
-                            calculateTotalScore(candidateId);
-                        });
-                    }
+    <!-- Gown Form -->
+    <div id="gown_table" class="category-table-gown" style="display: none;">
+        <form id="gown_form" action="{{ route('gown-scores.store') }}" method="POST">
+            @csrf
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Candidate Number</th>
+                        <th>Suitability (Score: 75-100)</th>
+                        <th>Poise, Grace, and Projection (Score: 75-100)</th>
+                        <th>Judge Name</th>
+                        <th>Total Score</th>
+                        <th>Rank</th>
+                    </tr>
+                </thead>
+                <tbody id="gown_table_body">
+                    <!-- Table content for gown category will be dynamically populated here -->
+                    @foreach($candidates as $candidate)
+                    <tr>
+                        <td>{{ $candidate->candidateNumber }}</td>
+                        <td>
+                            <input type="number" name="suitability[{{ $candidate->id }}]" min="75" max="100" required onchange="calculateGownTotalScore({{ $candidate->id }})">
+                        </td>
+                        <td>
+                            <input type="number" name="poise_grace_projection[{{ $candidate->id }}]" min="75" max="100" required onchange="calculateGownTotalScore({{ $candidate->id }})">
+                        </td>
+                        <td>
+                            <input type="text" name="judge_name[]" required>
+                        </td>
+                        <td id="totalScore_gown_{{ $candidate->id }}"></td>
+                        <td>
+                            <input type="text" name="rank[]" id="rank_gown_{{ $candidate->id }}" readonly>
+                        </td>
+                        <input type="hidden" name="candidate_number[]" value="{{ $candidate->candidateNumber }}">
+                        <input type="hidden" name="candidate_rank[]" id="candidate_rank_gown_{{ $candidate->id }}">
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    
+    <script>
+        // Function to calculate the total score and rank for gown category
+        function calculateGownTotalScore(candidateId) {
+            var suitabilityScore = parseInt(document.querySelector('input[name="suitability[' + candidateId + ']"]').value) || 0;
+            var poiseGraceProjectionScore = parseInt(document.querySelector('input[name="poise_grace_projection[' + candidateId + ']"]').value) || 0;
+            var totalScore = (suitabilityScore + poiseGraceProjectionScore) / 2; // Divide by 2
+            document.getElementById("totalScore_gown_" + candidateId).textContent = totalScore;
+            updateGownRank(); // Update the rank after calculating the total score
+        }
+    
+        // Function to update the rank for gown category
+        function updateGownRank() {
+            var totalScores = [];
+            document.querySelectorAll('td[id^="totalScore_gown_"]').forEach(function(scoreElement) {
+                var score = parseInt(scoreElement.textContent);
+                totalScores.push(score);
+            });
+            totalScores.sort(function(a, b) {
+                return b - a;
+            });
+            var rank = 1;
+            var prevScore = null;
+            totalScores.forEach(function(score) {
+                if (score !== prevScore) {
+                    document.querySelectorAll('td[id^="totalScore_gown_"]').forEach(function(scoreElement) {
+                        if (parseInt(scoreElement.textContent) === score) {
+                            var candidateId = scoreElement.id.split("_")[2]; // Updated to get the correct candidate ID
+                            var rankInput = document.getElementById("rank_gown_" + candidateId);
+                            var candidateRankInput = document.getElementById("candidate_rank_gown_" + candidateId);
+                            rankInput.value = rank;
+                            candidateRankInput.value = rank;
+                        }
+                    });
                 }
+                prevScore = score;
+                rank++;
             });
-        
-            // Call calculateTotalScore for initial calculation in pre-interview category
-            document.addEventListener('DOMContentLoaded', function() {
-                document.querySelectorAll('input[name^="composure"], input[name^="poise_grace_projection"]').forEach(function(input) {
-                    var candidateId = input.name.match(/\d+/)[0];
-                    calculateTotalScore(candidateId);
-                });
+        }
+    
+        // Event listener for category selection change
+        document.getElementById('categorySelect').addEventListener('change', function() {
+            var selectedCategory = this.value;
+            document.querySelectorAll('.category-table').forEach(function(table) {
+                table.style.display = 'none';
             });
-        </script>
-        
-      
+            if (selectedCategory === 'gown') {
+                document.getElementById(selectedCategory + '_table').style.display = 'block';
+            }
+        });
+    
+        // Call calculateGownTotalScore for initial calculation in gown category
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input[name^="suitability["], input[name^="poise_grace_projection["]').forEach(function(input) {
+                var candidateId = input.name.match(/\d+/)[0];
+                calculateGownTotalScore(candidateId);
+            });
+        });
+    </script>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>
