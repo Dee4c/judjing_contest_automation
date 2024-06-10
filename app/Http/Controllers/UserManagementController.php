@@ -13,6 +13,7 @@ use App\Models\GownScore;
 
 
 
+
 class UserManagementController extends Controller
 {
     public function addJudgeForm()
@@ -197,9 +198,35 @@ class UserManagementController extends Controller
     {
         // Fetch all candidates
         $candidates = Candidate::all();
-        
-        // Pass candidate data to the view
-        return view('usermanage.preliminary_dash', compact('candidates'));
+    
+        // Fetch judges
+        $judges = User::where('role', 'judge')->get();
+    
+        // Initialize an empty array to hold scores
+        $scores = [];
+    
+        // Loop through each candidate
+        foreach ($candidates as $candidate) {
+            // Initialize an empty array to hold scores for this candidate
+            $candidateData = [];
+    
+            // Loop through each judge
+            foreach ($judges as $judge) {
+                // Find the score given by this judge to the current candidate
+                $judgeScore = PreInterviewScore::where('candidate_number', $candidate->id)
+                                                ->where('judge_name', $judge->name)
+                                                ->first();
+    
+                // If the score exists, add it to the candidate data, otherwise, add null
+                $candidateData[$judge->name] = $judgeScore ? $judgeScore->rank : null;
+            }
+    
+            // Add the candidate's data to the scores array
+            $scores[$candidate->id] = $candidateData;
+        }
+    
+        // Pass candidate data, judges data, and scores data to the view
+        return view('usermanage.preliminary_dash', compact('candidates', 'judges', 'scores'));
     }
 
     public function judgeDashboard()

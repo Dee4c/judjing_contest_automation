@@ -435,7 +435,7 @@
     function calculateSwimSuitTotalScore(candidateId) {
         var composureScore = parseInt(document.querySelector('input[name="composure[' + candidateId + ']"]').value) || 0;
         var poiseGraceProjectionScore = parseInt(document.querySelector('input[name="poise_grace_projection[' + candidateId + ']"]').value) || 0;
-        var totalScore = composureScore + poiseGraceProjectionScore;
+        var totalScore = (composureScore + poiseGraceProjectionScore) / 2; // Calculate total score and divide by 2
         document.getElementById("totalScore_swim_suit_" + candidateId).textContent = totalScore;
         updateSwimSuitRank(); // Update the rank after calculating the total score
     }

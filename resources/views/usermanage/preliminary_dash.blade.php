@@ -373,17 +373,19 @@
 <div class="content">
     <div class="container">
         <!-- Title -->
-        <h1 class="title-id">Overall Scores</h1>
+        <h1 class="title-id">Preliminary Table</h1>
         <br>
         <!-- Table to display candidate ranks -->
+        <h2 class="title-id">Pre-Interview</h2>
+        <br>
         <div class="tbl-content">
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Candidate Number</th>
-                        <th>Pre-Interview <br> Rank</th>
-                        <th>Swimsuit <br> Rank</th>
-                        <th>Gown <br> Rank</th>
+                        @foreach($judges as $judge)
+                        <th>{{ $judge->name }}</th>
+                        @endforeach
                         <th>Total Score</th>
                         <th>Overall Rank</th>
                     </tr>
@@ -392,9 +394,19 @@
                     @foreach($candidates as $candidate)
                     <tr>
                         <td>{{ $candidate->id }}</td>
-                        <td>{{ $candidate->preInterviewAverageScore() }}</td>
-                        <td>{{ $candidate->swimSuitAverageScore() }}</td>
-                        <td>{{ $candidate->gownAverageScore() }}</td>
+                        <!-- Display ranks given by each judge for this candidate -->
+                        @foreach($judges as $judge)
+                        <td>
+                            @if(isset($scores[$candidate->id][$judge->name]))
+                                {{ $scores[$candidate->id][$judge->name] }}
+                            @else
+                                N/A <!-- If no rank is available for this judge and candidate -->
+                            @endif
+                        </td>
+                        @endforeach
+                        <!-- Add code to display the total score and overall rank -->
+                        <td>Total Score Placeholder</td>
+                        <td>Overall Rank Placeholder</td>
                     </tr>
                     @endforeach
                 </tbody>                
@@ -402,6 +414,7 @@
         </div>
     </div>
 </div>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>
