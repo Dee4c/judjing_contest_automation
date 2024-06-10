@@ -472,5 +472,10 @@ class UserManagementController extends Controller
         
             // Pass candidate data, judges data, and scores data to the view
             return view('usermanage.prelim_gown_dash', compact('candidates', 'judges', 'scores'));   
-        }        
+        }   
+        
+        public function preliminaryOverallRanksDash()
+        {
+            return view('usermanage.prelim_overall_ranks');
+        }
 }

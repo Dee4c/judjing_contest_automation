@@ -21,6 +21,7 @@ Route::put('/candidates/{id}', [UserManagementController::class, 'updateCandidat
 Route::get('/usermanage/preliminary_dash', [UserManagementController::class, 'preliminaryDash'])->name('usermanage.preliminary_dash');
 Route::get('/usermanage/prelim_swimsuit_dash', [UserManagementController::class, 'preliminarySwimSuitDash'])->name('usermanage.prelim_swimsuit_dash');
 Route::get('/usermanage/prelim_gown_dash', [UserManagementController::class, 'preliminaryGownDash'])->name('usermanage.prelim_gown_dash');
+Route::get('/usermanage/prelim_overall_ranks', [UserManagementController::class, 'preliminaryOverallRanksDash'])->name('usermanage.prelim_overall_ranks_dash');
 Route::get('/judge/judgeDashboard', [UserManagementController::class, 'judgeDashboard'])->middleware('isLoggedIn')->name('judge.judge_dashboard');
 Route::get('/pre-interview-scores', [UserManagementController::class, 'getPreInterviewScores']);
 Route::get('/judge/semifinalsDashboard', [UserManagementController::class, 'semifinalsDashboard'])->middleware('isLoggedIn')->name('judge.semi_finals_dash');

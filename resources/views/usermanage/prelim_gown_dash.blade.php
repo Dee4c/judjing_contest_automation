@@ -371,6 +371,7 @@
                 <li><a href="{{route('usermanage.preliminary_dash')}}">Pre-Interview</a></li>
                 <li><a href="{{route('usermanage.prelim_swimsuit_dash')}}">Swim-Suit</a></li>
                 <li><a href="{{route('usermanage.prelim_gown_dash')}}">Gown</a></li>
+                <li><a href="{{route('usermanage.prelim_overall_ranks_dash')}}">Overall Rankings</a></li>
             </ul>
         </li>        
         <li>
