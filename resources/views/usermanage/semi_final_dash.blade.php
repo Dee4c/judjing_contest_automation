@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preliminary Table Category Swim-Suit</title>
+    <title>Semi Final Table</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <style>
@@ -314,11 +314,10 @@
             width: 200px; /* Adjust the width as needed */
         }
 
-        
                 /* Dropdown Styles */
-          .dropdown {
+        .dropdown {
             padding-left: 20px;
-            display: none;      
+            display: none;
         }
 
         .dropdown li {
@@ -338,6 +337,18 @@
             background: #FFF;
             color: #11101D;
         }
+
+      /* CSS for hiding the sidebar in printing mode and centering the table */
+        @media print {
+        .sidebar {
+            display: none;
+        }
+
+        .print-button {
+            display: none;
+        }
+     }
+    
     </style>
 </head>
 <body>
@@ -371,11 +382,11 @@
                 <li><a href="{{route('usermanage.preliminary_dash')}}">Pre-Interview</a></li>
                 <li><a href="{{route('usermanage.prelim_swimsuit_dash')}}">Swim-Suit</a></li>
                 <li><a href="{{route('usermanage.prelim_gown_dash')}}">Gown</a></li>
-                <li><a href="{{route('usermanage.prelim_overall_ranks_dash')}}">Overall Rankings</a></li>
+                <li><a href="{{route('usermanage.prelim_gown_dash')}}">Overall Rankings</a></li>
             </ul>
         </li>        
         <li>
-            <a href="{{route('usermanage.semi_final_dash')}}">
+            <a href="#">
                 <i class='bx bx-line-chart'></i>
                 <span class="links_name">Semi-Finals</span>
             </a>
@@ -403,121 +414,12 @@
 </div>
 <div class="content">
     <div class="container">
-        <!-- Title -->
-        <h1 class="title-id">Preliminary Table</h1>
-        <br>
-        <!-- Table to display candidate ranks -->
-        <h2 class="title-id">Gown</h2>
-        <br>
-        <div class="tbl-content">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Candidate Number</th>
-                        @foreach($judges as $judge)
-                        <th>{{ $judge->name }}</th>
-                        @endforeach
-                        <th>Total Score</th>
-                        <th>Overall Rank</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($candidates as $candidate)
-                    <tr>
-                        <td>{{ $candidate->id }}</td>
-                        <!-- Display ranks given by each judge for this candidate -->
-                        @foreach($judges as $judge)
-                        <td>
-                            @if(isset($scores[$candidate->id][$judge->name]))
-                                {{ $scores[$candidate->id][$judge->name] }}
-                            @else
-                                N/A <!-- If no rank is available for this judge and candidate -->
-                            @endif
-                        </td>
-                        @endforeach
-                        <!-- Add code to display the total score and overall rank -->
-                        <td data-total="">
-                            @if(isset($gownTotalScores[$candidate->id]))
-                                {{ $gownTotalScores[$candidate->id] }}
-                            @else
-                                N/A <!-- If total score is not available -->
-                            @endif
-                        </td>
-                        <td data-rank="">
-                            @if(isset($gownOverallRanks[$candidate->id]))
-                                {{ $gownOverallRanks[$candidate->id] }}
-                            @else
-                                N/A <!-- If overall rank is not available -->
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>                
-            </table>
-        </div>
-        <!-- Submit button -->
-        <form method="POST" action="{{ route('usermanage.gown_overall_ranks.store') }}">
-            @csrf
-            <!-- Hidden input fields for candidate number and overall rank -->
-            @foreach($candidates as $candidate)
-            <input type="hidden" name="candidate_number[]" value="{{ $candidate->id }}">
-            <input type="hidden" name="overall_rank[{{ $candidate->id }}]" value="{{ $gownOverallRanks[$candidate->id] ?? '' }}">
-            @endforeach
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>        
+    
     </div>
 </div>
 
 <script>
-    // Function to calculate the total score and rank for each candidate
-    function calculateTotalScore() {
-        // Loop through each candidate row
-        document.querySelectorAll('.content table tbody tr').forEach(function(candidateRow) {
-            // Initialize variables for calculating total score and overall rank
-            var totalScore = 0;
-
-            // Loop through each judge's score for the candidate (exclude the first cell which contains the candidate number)
-            candidateRow.querySelectorAll('td:not(:first-child)').forEach(function(scoreCell) {
-                // Get the score for the judge and add it to the total score
-                var score = parseFloat(scoreCell.textContent);
-                if (!isNaN(score)) {
-                    totalScore += score;
-                }
-            });
-
-            // Update the total score for the candidate
-            candidateRow.querySelector('td[data-total]').textContent = totalScore;
-        });
-
-        // Sort the rows based on total score
-        var rows = Array.from(document.querySelectorAll('.content table tbody tr'));
-        rows.sort(function(a, b) {
-            var scoreA = parseFloat(a.querySelector('td[data-total]').textContent);
-            var scoreB = parseFloat(b.querySelector('td[data-total]').textContent);
-            return scoreA - scoreB; // Sort in ascending order (lowest score first)
-        });
-
-        // Update the rank for each candidate
-        var rank = 1;
-        var prevScore = null;
-        rows.forEach(function(row, index) {
-            var score = parseFloat(row.querySelector('td[data-total]').textContent);
-            if (prevScore !== null && score !== prevScore) {
-                rank = index + 1;
-            }
-            row.querySelector('td[data-rank]').textContent = rank;
-            prevScore = score;
-
-            // Update the hidden input field with the calculated overall rank
-            var candidateNumber = row.querySelector('td:first-child').textContent;
-            document.querySelector('input[name="overall_rank[' + candidateNumber + ']"]').value = rank;
-        });
-    }
-
-    // Initial calculation on page load
-    calculateTotalScore();
-
-    // Dropdown menu handling
+    // Toggle sidebar dropdown
     document.querySelector('.sidebar li:nth-child(3) a').addEventListener('click', function() {
         var dropdown = document.querySelector('.sidebar li:nth-child(3) .dropdown');
         if (dropdown.style.display === 'block') {

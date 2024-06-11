@@ -338,6 +338,17 @@
             color: #11101D;
         }
 
+      /* CSS for hiding the sidebar in printing mode and centering the table */
+        @media print {
+        .sidebar {
+            display: none;
+        }
+
+        .print-button {
+            display: none;
+        }
+     }
+    
     </style>
 </head>
 <body>
@@ -375,14 +386,14 @@
             </ul>
         </li>        
         <li>
-            <a href="#">
+            <a href="{{route('usermanage.semi_final_dash')}}">
                 <i class='bx bx-line-chart'></i>
                 <span class="links_name">Semi-Finals</span>
             </a>
             <span class="tooltip">Semi-Finals</span>
         </li>
         <li>
-            <a href="#">
+            <a href="{{route('usermanage.semi_final_dash')}}">
                 <i class='bx bxs-crown'></i>
                 <span class="links_name">Finals</span>
             </a>
@@ -402,6 +413,9 @@
     </ul>
 </div>
 <div class="content">
+    <!-- Add print button here -->
+    <button onclick="printTable()" style="position: absolute; top: 20px; right: 20px;" class="btn btn-primary">Print</button>
+
     <div class="container">
         <!-- Table to display candidate ranks -->
         <h2 class="title-id">Overall Rankings</h2>
@@ -422,11 +436,26 @@
                     @foreach($candidates as $candidate)
                     <tr>
                         <td>{{ $candidate->id }}</td>
-                        <td>{{ $preInterviewRanks[$candidate->id] ?? '-' }}</td>
-                        <td>{{ $swimSuitRanks[$candidate->id] ?? '-' }}</td>
-                        <td>{{ $gownRanks[$candidate->id] ?? '-' }}</td>
-                        <td>{{ $candidate->totalScore }}</td>
-                        <td>{{ $candidate->overallRank }}</td>
+                        <td>
+                            <!-- Display retrieved pre-interview rank -->
+                            {{ $preInterviewRanks[$candidate->id] ?? '-' }}
+                            <!-- Hidden input field for pre-interview rank -->
+                            <input type="hidden" name="preInterview[{{ $candidate->id }}]" value="{{ $preInterviewRanks[$candidate->id] ?? 0 }}">
+                        </td>
+                        <td>
+                            <!-- Display retrieved swim suit rank -->
+                            {{ $swimSuitRanks[$candidate->id] ?? '-' }}
+                            <!-- Hidden input field for swim suit rank -->
+                            <input type="hidden" name="swimSuit[{{ $candidate->id }}]" value="{{ $swimSuitRanks[$candidate->id] ?? 0 }}">
+                        </td>
+                        <td>
+                            <!-- Display retrieved gown rank -->
+                            {{ $gownRanks[$candidate->id] ?? '-' }}
+                            <!-- Hidden input field for gown rank -->
+                            <input type="hidden" name="gown[{{ $candidate->id }}]" value="{{ $gownRanks[$candidate->id] ?? 0 }}">
+                        </td>
+                        <td id="totalScore_{{ $candidate->id }}"></td> <!-- Updated to include ID for total score -->
+                        <td id="overall_rank_{{ $candidate->id }}"></td> <!-- Updated to include ID for overall rank -->
                     </tr>
                     @endforeach
                 </tbody>
@@ -435,17 +464,77 @@
     </div>
 </div>
 
-
 <script>
-     document.querySelector('.sidebar li:nth-child(3) a').addEventListener('click', function() {
-         var dropdown = document.querySelector('.sidebar li:nth-child(3) .dropdown');
-         if (dropdown.style.display === 'block') {
-             dropdown.style.display = 'none';
-         } else {
-             dropdown.style.display = 'block';
-         }
-     });
+    // Function to calculate and display the total score for each candidate
+    function calculateTotalScore() {
+        // Loop through each row in the table
+        document.querySelectorAll('tbody tr').forEach(function(row) {
+            var preInterviewRank = parseFloat(row.cells[1].textContent) || 0;
+            var swimSuitRank = parseFloat(row.cells[2].textContent) || 0;
+            var gownRank = parseFloat(row.cells[3].textContent) || 0;
+
+            // Sum up the ranks for each candidate
+            var totalScore = preInterviewRank + swimSuitRank + gownRank;
+
+            // Display the total score in the appropriate cell
+            row.cells[4].textContent = totalScore;
+
+            // Call function to update overall rank
+            calculateOverallRank();
+        });
+    }
+
+    // Function to calculate the overall rank for each candidate
+    function calculateOverallRank() {
+        var totalScores = [];
+        document.querySelectorAll('td[id^="totalScore_"]').forEach(function(scoreElement) {
+            var score = parseFloat(scoreElement.textContent);
+            totalScores.push(score);
+        });
+
+        // Sort the total scores in ascending order
+        totalScores.sort(function(a, b) {
+            return a - b;
+        });
+
+        // Assign overall rank based on the sorted scores
+        var rank = 1;
+        var prevScore = null;
+        totalScores.forEach(function(score) {
+            if (score !== prevScore) {
+                document.querySelectorAll('td[id^="totalScore_"]').forEach(function(scoreElement) {
+                    if (parseFloat(scoreElement.textContent) === score) {
+                        var candidateId = scoreElement.id.split("_")[1];
+                        var overallRankElement = document.getElementById("overall_rank_" + candidateId);
+                        overallRankElement.textContent = rank;
+                    }
+                });
+            }
+            prevScore = score;
+            rank++;
+        });
+    }
+
+    // Call calculateTotalScore function
+    document.addEventListener('DOMContentLoaded', function() {
+        calculateTotalScore();
+    });
+
+    // Toggle sidebar dropdown
+    document.querySelector('.sidebar li:nth-child(3) a').addEventListener('click', function() {
+        var dropdown = document.querySelector('.sidebar li:nth-child(3) .dropdown');
+        if (dropdown.style.display === 'block') {
+            dropdown.style.display = 'none';
+        } else {
+            dropdown.style.display = 'block';
+        }
+    });
+
+    function printTable() {
+        window.print();
+    }
 </script>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>

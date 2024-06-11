@@ -33,6 +33,7 @@ Route::get('/gown-table', [UserManagementController::class, 'gownTable'])->middl
 Route::post('/usermanage/preliminary_overall_ranks', [UserManagementController::class, 'storePreliminaryOverallRanks'])->name('usermanage.preliminary_overall_ranks.store');
 Route::post('/usermanage/swimsuit_overall_ranks', [UserManagementController::class, 'storeSwimSuitOverallRanks'])->name('usermanage.swimsuit_overall_ranks.store');
 Route::post('/usermanage/gown_overall_ranks', [UserManagementController::class, 'storeGownOverallRanks'])->name('usermanage.gown_overall_ranks.store');
+Route::get('/usermanage/semi_final_dash', [UserManagementController::class,'SemiFinalDash'])->middleware('isLoggedIn')->name('usermanage.semi_final_dash');
 
 
 

@@ -379,7 +379,7 @@
             <span class="tooltip">Preliminaries</span>
         </li>
         <li>
-            <a href="#">
+            <a href="{{route('usermanage.semi_final_dash')}}">
                 <i class='bx bx-line-chart'></i>
                 <span class="links_name">Semi-Finals</span>
             </a>

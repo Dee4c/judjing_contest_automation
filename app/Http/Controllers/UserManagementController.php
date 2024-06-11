@@ -525,7 +525,7 @@ class UserManagementController extends Controller
             }
         
             // Redirect to the swim suit overall ranks submission route
-            return redirect()->route('usermanage.swimsuit_overall_ranks_dash')->with('success', 'Pre-interview overall ranks submitted successfully!');
+            return redirect()->route('usermanage.prelim_swimsuit_dash')->with('success', 'Pre-interview overall ranks submitted successfully!');
         }
         
         
@@ -549,7 +549,7 @@ class UserManagementController extends Controller
             }
             
             // Redirect back or return any other response as needed
-            return redirect()->back()->with('success', 'Swim suit overall ranks submitted successfully!');
+            return redirect()->route('usermanage.prelim_gown_dash')->with('success', 'Swim suit overall ranks submitted successfully!');
         }
 
         public function storeGownOverallRanks(Request $request)
@@ -572,7 +572,11 @@ class UserManagementController extends Controller
             }
             
             // Redirect back or return any other response as needed
-            return redirect()->route('usermanage.prelim_overall_ranks')->with('success', 'Gown overall ranks submitted successfully!');
+            return redirect()->route('usermanage.prelim_overall_ranks_dash')->with('success', 'Gown overall ranks submitted successfully!');
         }
-
+        
+        public function SemiFinalDash()
+        {
+            return view('usermanage.semi_final_dash');
+        }
 }
