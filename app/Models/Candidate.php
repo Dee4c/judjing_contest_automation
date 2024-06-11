@@ -15,6 +15,9 @@ class Candidate extends Model
         'age',
         'candidateAddress',
         'candidateStatistics',
+        'preInterviewRank', // Add property for pre-interview rank
+        'swimSuitRank', // Add property for swim suit rank
+        'gownRank', // Add property for gown rank
     ];
 
 }

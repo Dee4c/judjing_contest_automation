@@ -30,6 +30,12 @@ Route::post('/swim-suit-scores', [UserManagementController::class,'storeSwimSuit
 Route::post('gown-scores', [UserManagementController::class, 'storeGownScore'])->middleware('isLoggedIn')->name('gown-scores.store');
 Route::get('/swim-suit-table', [UserManagementController::class, 'swimSuitTable'])->middleware('isLoggedIn')->name('swim-suit-table');
 Route::get('/gown-table', [UserManagementController::class, 'gownTable'])->middleware('isLoggedIn')->name('gown-table');
+Route::post('/usermanage/preliminary_overall_ranks', [UserManagementController::class, 'storePreliminaryOverallRanks'])->name('usermanage.preliminary_overall_ranks.store');
+Route::post('/usermanage/swimsuit_overall_ranks', [UserManagementController::class, 'storeSwimSuitOverallRanks'])->name('usermanage.swimsuit_overall_ranks.store');
+Route::post('/usermanage/gown_overall_ranks', [UserManagementController::class, 'storeGownOverallRanks'])->name('usermanage.gown_overall_ranks.store');
+
+
+
 
 
 

@@ -403,20 +403,17 @@
 </div>
 <div class="content">
     <div class="container">
-        <!-- Title -->
-        <h1 class="title-id">Preliminary Table</h1>
-        <br>
         <!-- Table to display candidate ranks -->
-        <h2 class="title-id">Pre-Interview</h2>
+        <h2 class="title-id">Overall Rankings</h2>
         <br>
         <div class="tbl-content">
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Candidate Number</th>
-                        @foreach($judges as $judge)
-                        <th>{{ $judge->name }}</th>
-                        @endforeach
+                        <th>Pre-Interview Rank</th>
+                        <th>Swim Suit Rank</th>
+                        <th>Gown Rank</th>
                         <th>Total Score</th>
                         <th>Overall Rank</th>
                     </tr>
@@ -425,82 +422,30 @@
                     @foreach($candidates as $candidate)
                     <tr>
                         <td>{{ $candidate->id }}</td>
-                        <!-- Display ranks given by each judge for this candidate -->
-                        @foreach($judges as $judge)
-                        <td>
-                            @if(isset($scores[$candidate->id][$judge->name]))
-                                {{ $scores[$candidate->id][$judge->name] }}
-                            @else
-                                N/A <!-- If no rank is available for this judge and candidate -->
-                            @endif
-                        </td>
-                        @endforeach
-                        <!-- Add code to display the total score and overall rank -->
-                        <td data-total="">Total Score Placeholder</td>
-                        <td data-rank="">Overall Rank Placeholder</td>
+                        <td>{{ $preInterviewRanks[$candidate->id] ?? '-' }}</td>
+                        <td>{{ $swimSuitRanks[$candidate->id] ?? '-' }}</td>
+                        <td>{{ $gownRanks[$candidate->id] ?? '-' }}</td>
+                        <td>{{ $candidate->totalScore }}</td>
+                        <td>{{ $candidate->overallRank }}</td>
                     </tr>
                     @endforeach
-                </tbody>                
+                </tbody>
             </table>
         </div>
     </div>
 </div>
+
+
 <script>
-   // Function to calculate the total score and rank for each candidate
-    function calculateTotalScore() {
-        // Loop through each candidate row
-        document.querySelectorAll('.content table tbody tr').forEach(function(candidateRow) {
-            // Initialize variables for calculating total score
-            var totalScore = 0;
-
-            // Loop through each judge's score for the candidate (exclude the first cell which contains the candidate number)
-            candidateRow.querySelectorAll('td:not(:first-child)').forEach(function(scoreCell) {
-                // Get the score for the judge and add it to the total score
-                var score = parseFloat(scoreCell.textContent);
-                if (!isNaN(score)) {
-                    totalScore += score;
-                }
-            });
-
-            // Update the total score for the candidate
-            candidateRow.querySelector('td[data-total]').textContent = totalScore;
-        });
-
-        // Sort the rows based on total score
-        var rows = Array.from(document.querySelectorAll('.content table tbody tr'));
-        rows.sort(function(a, b) {
-            var scoreA = parseFloat(a.querySelector('td[data-total]').textContent);
-            var scoreB = parseFloat(b.querySelector('td[data-total]').textContent);
-            return scoreA - scoreB; // Sort in ascending order (lowest score first)
-        });
-
-        // Update the rank for each candidate
-        var rank = 1;
-        var prevScore = null;
-        rows.forEach(function(row, index) {
-            var score = parseFloat(row.querySelector('td[data-total]').textContent);
-            if (prevScore !== null && score !== prevScore) {
-                rank = index + 1;
-            }
-            row.querySelector('td[data-rank]').textContent = rank;
-            prevScore = score;
-        });
-    }
-
-    // Initial calculation on page load
-    calculateTotalScore();
-
-    // Dropdown menu handling
-    document.querySelector('.sidebar li:nth-child(3) a').addEventListener('click', function() {
-        var dropdown = document.querySelector('.sidebar li:nth-child(3) .dropdown');
-        if (dropdown.style.display === 'block') {
-            dropdown.style.display = 'none';
-        } else {
-            dropdown.style.display = 'block';
-        }
-    });
+     document.querySelector('.sidebar li:nth-child(3) a').addEventListener('click', function() {
+         var dropdown = document.querySelector('.sidebar li:nth-child(3) .dropdown');
+         if (dropdown.style.display === 'block') {
+             dropdown.style.display = 'none';
+         } else {
+             dropdown.style.display = 'block';
+         }
+     });
 </script>
-
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>

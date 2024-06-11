@@ -436,70 +436,98 @@
                         </td>
                         @endforeach
                         <!-- Add code to display the total score and overall rank -->
-                        <td data-total="">Total Score Placeholder</td>
-                        <td data-rank="">Overall Rank Placeholder</td>
+                        <td data-total="">
+                            @if(isset($totalScores[$candidate->id]))
+                                {{ $totalScores[$candidate->id] }}
+                            @else
+                                N/A <!-- If total score is not available -->
+                            @endif
+                        </td>
+                        <td data-rank="">
+                            @if(isset($overallRanks[$candidate->id]))
+                                {{ $overallRanks[$candidate->id] }}
+                            @else
+                                N/A <!-- If overall rank is not available -->
+                            @endif
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>                
             </table>
         </div>
+        <!-- Submit button -->
+        <form method="POST" action="{{ route('usermanage.swimsuit_overall_ranks.store') }}">
+            @csrf
+            <!-- Hidden input fields for candidate number and overall rank -->
+            @foreach($candidates as $candidate)
+            <input type="hidden" name="candidate_number[]" value="{{ $candidate->id }}">
+            <input type="hidden" name="overall_rank[{{ $candidate->id }}]" value="{{ $overallRanks[$candidate->id] ?? '' }}">
+            @endforeach
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
 </div>
+
 <script>
     // Function to calculate the total score and rank for each candidate
-     function calculateTotalScore() {
-         // Loop through each candidate row
-         document.querySelectorAll('.content table tbody tr').forEach(function(candidateRow) {
-             // Initialize variables for calculating total score
-             var totalScore = 0;
- 
-             // Loop through each judge's score for the candidate (exclude the first cell which contains the candidate number)
-             candidateRow.querySelectorAll('td:not(:first-child)').forEach(function(scoreCell) {
-                 // Get the score for the judge and add it to the total score
-                 var score = parseFloat(scoreCell.textContent);
-                 if (!isNaN(score)) {
-                     totalScore += score;
-                 }
-             });
- 
-             // Update the total score for the candidate
-             candidateRow.querySelector('td[data-total]').textContent = totalScore;
-         });
- 
-         // Sort the rows based on total score
-         var rows = Array.from(document.querySelectorAll('.content table tbody tr'));
-         rows.sort(function(a, b) {
-             var scoreA = parseFloat(a.querySelector('td[data-total]').textContent);
-             var scoreB = parseFloat(b.querySelector('td[data-total]').textContent);
-             return scoreA - scoreB; // Sort in ascending order (lowest score first)
-         });
- 
-         // Update the rank for each candidate
-         var rank = 1;
-         var prevScore = null;
-         rows.forEach(function(row, index) {
-             var score = parseFloat(row.querySelector('td[data-total]').textContent);
-             if (prevScore !== null && score !== prevScore) {
-                 rank = index + 1;
-             }
-             row.querySelector('td[data-rank]').textContent = rank;
-             prevScore = score;
-         });
-     }
- 
-     // Initial calculation on page load
-     calculateTotalScore();
- 
-     // Dropdown menu handling
-     document.querySelector('.sidebar li:nth-child(3) a').addEventListener('click', function() {
-         var dropdown = document.querySelector('.sidebar li:nth-child(3) .dropdown');
-         if (dropdown.style.display === 'block') {
-             dropdown.style.display = 'none';
-         } else {
-             dropdown.style.display = 'block';
-         }
-     });
- </script>
+    function calculateTotalScore() {
+        // Loop through each candidate row
+        document.querySelectorAll('.content table tbody tr').forEach(function(candidateRow) {
+            // Initialize variables for calculating total score and overall rank
+            var totalScore = 0;
+
+            // Loop through each judge's score for the candidate (exclude the first cell which contains the candidate number)
+            candidateRow.querySelectorAll('td:not(:first-child)').forEach(function(scoreCell) {
+                // Get the score for the judge and add it to the total score
+                var score = parseFloat(scoreCell.textContent);
+                if (!isNaN(score)) {
+                    totalScore += score;
+                }
+            });
+
+            // Update the total score for the candidate
+            candidateRow.querySelector('td[data-total]').textContent = totalScore;
+        });
+
+        // Sort the rows based on total score
+        var rows = Array.from(document.querySelectorAll('.content table tbody tr'));
+        rows.sort(function(a, b) {
+            var scoreA = parseFloat(a.querySelector('td[data-total]').textContent);
+            var scoreB = parseFloat(b.querySelector('td[data-total]').textContent);
+            return scoreA - scoreB; // Sort in ascending order (lowest score first)
+        });
+
+        // Update the rank for each candidate
+        var rank = 1;
+        var prevScore = null;
+        rows.forEach(function(row, index) {
+            var score = parseFloat(row.querySelector('td[data-total]').textContent);
+            if (prevScore !== null && score !== prevScore) {
+                rank = index + 1;
+            }
+            row.querySelector('td[data-rank]').textContent = rank;
+            prevScore = score;
+
+            // Update the hidden input field with the calculated overall rank
+            var candidateNumber = row.querySelector('td:first-child').textContent;
+            document.querySelector('input[name="overall_rank[' + candidateNumber + ']"]').value = rank;
+        });
+    }
+
+    // Initial calculation on page load
+    calculateTotalScore();
+
+    // Dropdown menu handling
+    document.querySelector('.sidebar li:nth-child(3) a').addEventListener('click', function() {
+        var dropdown = document.querySelector('.sidebar li:nth-child(3) .dropdown');
+        if (dropdown.style.display === 'block') {
+            dropdown.style.display = 'none';
+        } else {
+            dropdown.style.display = 'block';
+        }
+    });
+</script>
+
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

@@ -10,6 +10,9 @@ use App\Models\Candidate;
 use App\Models\SwimSuitScore;
 use App\Models\PreInterviewScore;
 use App\Models\GownScore;
+use App\Models\PreInterviewOR;
+use App\Models\SwimSuitOR;
+use App\Models\GownOR;
 
 
 
@@ -476,6 +479,100 @@ class UserManagementController extends Controller
         
         public function preliminaryOverallRanksDash()
         {
-            return view('usermanage.prelim_overall_ranks');
+            // Fetch all candidates
+            $candidates = Candidate::all();
+            
+            // Initialize arrays to hold ranks for each category
+            $preInterviewRanks = [];
+            $swimSuitRanks = [];
+            $gownRanks = [];
+        
+            // Loop through each candidate
+            foreach ($candidates as $candidate) {
+                // Fetch pre-interview rank for the candidate
+                $preInterviewRanks[$candidate->id] = PreInterviewOR::where('candidate_number', $candidate->id)->value('overall_rank');
+        
+                // Fetch swim suit rank for the candidate
+                $swimSuitRanks[$candidate->id] = SwimSuitOR::where('candidate_number', $candidate->id)->value('overall_rank');
+        
+                // Fetch gown rank for the candidate
+                $gownRanks[$candidate->id] = GownOR::where('candidate_number', $candidate->id)->value('overall_rank');
+            }
+        
+            // Pass the retrieved data to the view
+            return view('usermanage.prelim_overall_ranks', compact('candidates', 'preInterviewRanks', 'swimSuitRanks', 'gownRanks'));
         }
+        
+        
+
+        public function storePreliminaryOverallRanks(Request $request)
+        {
+            // Fetch overall ranks for each candidate from the request
+            $overallRanks = $request->input('overall_rank');
+        
+            // Loop through overall ranks to store them
+            foreach ($overallRanks as $candidateId => $overallRank) {
+                // Create or update the PreInterviewOR record for this candidate
+                $preInterviewOR = PreInterviewOR::where('candidate_number', $candidateId)->first();
+                if (!$preInterviewOR) {
+                    PreInterviewOR::create([
+                        'candidate_number' => $candidateId,
+                        'overall_rank' => $overallRank,
+                    ]);
+                } else {
+                    $preInterviewOR->update(['overall_rank' => $overallRank]);
+                }
+            }
+        
+            // Redirect to the swim suit overall ranks submission route
+            return redirect()->route('usermanage.swimsuit_overall_ranks_dash')->with('success', 'Pre-interview overall ranks submitted successfully!');
+        }
+        
+        
+        public function storeSwimSuitOverallRanks(Request $request)
+        {
+            // Fetch overall ranks for each candidate from the request
+            $overallRanks = $request->input('overall_rank');
+            
+            // Loop through overall ranks to store them
+            foreach ($overallRanks as $candidateId => $overallRank) {
+                // Create or update the SwimSuitOR record for this candidate
+                $swimSuitOR = SwimSuitOR::where('candidate_number', $candidateId)->first();
+                if (!$swimSuitOR) {
+                    SwimSuitOR::create([
+                        'candidate_number' => $candidateId,
+                        'overall_rank' => $overallRank,
+                    ]);
+                } else {
+                    $swimSuitOR->update(['overall_rank' => $overallRank]);
+                }
+            }
+            
+            // Redirect back or return any other response as needed
+            return redirect()->back()->with('success', 'Swim suit overall ranks submitted successfully!');
+        }
+
+        public function storeGownOverallRanks(Request $request)
+        {
+            // Fetch overall ranks for each candidate from the request
+            $overallRanks = $request->input('overall_rank');
+            
+            // Loop through overall ranks to store them
+            foreach ($overallRanks as $candidateId => $overallRank) {
+                // Create or update the GownOR record for this candidate
+                $gownOR = GownOR::where('candidate_number', $candidateId)->first();
+                if (!$gownOR) {
+                    GownOR::create([
+                        'candidate_number' => $candidateId,
+                        'overall_rank' => $overallRank,
+                    ]);
+                } else {
+                    $gownOR->update(['overall_rank' => $overallRank]);
+                }
+            }
+            
+            // Redirect back or return any other response as needed
+            return redirect()->route('usermanage.prelim_overall_ranks')->with('success', 'Gown overall ranks submitted successfully!');
+        }
+
 }
