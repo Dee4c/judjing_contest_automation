@@ -29,7 +29,7 @@
             left: 0;
             top: 0;
             height: 100%;
-            background: rgb(0, 0, 0);
+            background: rgb(168, 61, 61);
             background: linear-gradient(90deg, rgba(0, 0, 0, 1) 59%, rgba(198, 174, 53, 1) 99%);
             width: 250px;
             padding: 6px 14px;
@@ -281,11 +281,12 @@
         }
 
         .tbl-content {
-            height: 300px;
-            overflow-x: auto;
-            margin-top: 0px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
+    background-color: rgba(0, 0, 0, 0); /* Transparent background */
+    height: 300px;
+    overflow-x: auto;
+    margin-top: 0px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
         th {
             padding: 15px; /* Adjusted padding for header */

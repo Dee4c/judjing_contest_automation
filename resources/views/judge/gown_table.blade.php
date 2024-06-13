@@ -281,11 +281,12 @@
         }
 
         .tbl-content {
-            height: 300px;
-            overflow-x: auto;
-            margin-top: 0px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
+    background-color: rgba(0, 0, 0, 0); /* Transparent background */
+    height: 300px;
+    overflow-x: auto;
+    margin-top: 0px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
         th {
             padding: 15px; /* Adjusted padding for header */
